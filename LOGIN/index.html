@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - SocialApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#FBF8F3',
+                        'text-primary': '#000122',
+                        'text-secondary': '#6C6051',
+                        'btn-inactive': '#C6B7A4',
+                        'btn-active': '#635FE5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bg-primary min-h-screen flex flex-col justify-center items-center p-4">
+        <!-- Logo Header -->
+        <div class="mb-8">
+            <img src="../img/logo-icon.png" alt="PlaceNet Logo" class="h-16 w-auto mx-auto">
+        </div>
+
+        <div class=" p-8 w-full max-w-md relative overflow-hidden">
+            <!-- Encabezado del formulario -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-text-primary mb-2">Iniciar Sesión</h2>
+                <p class="text-text-secondary text-sm">Ingresa tu número para continuar</p>
+            </div>
+            
+            <!-- Login Form -->
+            <div class="mb-6">
+                
+                <form id="loginForm" class="space-y-6">
+                    <div class="space-y-2">
+                        <label for="phone" class="block text-sm font-medium text-text-primary">
+                            Número de teléfono
+                        </label>
+                        <div class="flex gap-2">
+                            <select id="countryCode" class="flex-shrink-0 w-24 px-3 py-3 border-2 border-gray-200 rounded-lg focus:border-btn-active focus:ring-0 text-sm bg-white">
+                                <option value="+34">🇪🇸 +34</option>
+                                <option value="+1">🇺🇸 +1</option>
+                                <option value="+52">🇲🇽 +52</option>
+                                <option value="+54">🇦🇷 +54</option>
+                            </select>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                placeholder="612 345 678" 
+                                required
+                                class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-btn-active focus:outline-none transition-colors"
+                            >
+                        </div>
+                    </div>
+                    
+                    <!-- Checkboxes de términos y privacidad -->
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3">
+                            <input 
+                                type="checkbox" 
+                                id="terms" 
+                                required
+                                class="mt-1 h-4 w-4 text-btn-active border-2 border-gray-300 rounded focus:ring-btn-active focus:ring-2 focus:ring-opacity-50"
+                            >
+                            <label for="terms" class="text-sm text-text-secondary leading-5">
+                                Acepto los 
+                                <a href="https://placenet.app/terms.html" class="text-btn-active font-medium hover:underline">términos de uso</a>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-start gap-3">
+                            <input 
+                                type="checkbox" 
+                                id="privacy" 
+                                required
+                                class="mt-1 h-4 w-4 text-btn-active border-2 border-gray-300 rounded focus:ring-btn-active focus:ring-2 focus:ring-opacity-50"
+                            >
+                            <label for="privacy" class="text-sm text-text-secondary leading-5">
+                                Acepto la 
+                                <a href="https://placenet.app/privacidad.html" class="text-btn-active font-medium hover:underline">política de privacidad</a>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button 
+                        type="submit" 
+                        id="submitBtn"
+                        disabled
+                        class="w-full py-3 px-6 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all duration-200 bg-btn-inactive text-white cursor-not-allowed"
+                    >
+                        Enviar código SMS
+                    </button>
+                </form>
+                
+               
+                
+               
+            </div>
+            
+            <!-- Footer -->
+            <div class="text-center pt-6 border-t border-gray-100">
+                <p class="text-text-secondary text-sm">
+                    ¿Necesitas ayuda? 
+                    <a href="#support" class="text-btn-active font-medium hover:underline">Soporte</a>
+                </p>
+            </div>
+        </div>
+
+    <script>
+        // Función para validar el formulario y activar/desactivar el botón
+        function validateForm() {
+            const phone = document.getElementById('phone').value.replace(/\s/g, '');
+            const termsAccepted = document.getElementById('terms').checked;
+            const privacyAccepted = document.getElementById('privacy').checked;
+            const submitBtn = document.getElementById('submitBtn');
+            
+            const isPhoneValid = phone.length >= 9;
+            const isFormValid = isPhoneValid && termsAccepted && privacyAccepted;
+            
+            if (isFormValid) {
+                submitBtn.disabled = false;
+                submitBtn.className = "w-full bg-btn-active text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-btn-active focus:ring-opacity-50 transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg cursor-pointer";
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.className = "w-full py-3 px-6 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all duration-200 bg-btn-inactive text-white cursor-not-allowed";
+            }
+        }
+
+        // Login form handling
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const phone = document.getElementById('phone').value.replace(/\s/g, '');
+            const countryCode = document.getElementById('countryCode').value;
+
+            // Store phone for next step (you can integrate this with your app's storage)
+            sessionStorage.setItem('phoneNumber', countryCode + phone);
+            
+            // Here you would integrate with your app navigation
+            console.log('Navigate to verification with phone:', countryCode + phone);
+        });
+
+        // Phone number formatting
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            let formattedValue = '';
+            
+            if (value.length > 0) {
+                if (value.length <= 3) {
+                    formattedValue = value;
+                } else if (value.length <= 6) {
+                    formattedValue = value.slice(0, 3) + ' ' + value.slice(3);
+                } else {
+                    formattedValue = value.slice(0, 3) + ' ' + value.slice(3, 6) + ' ' + value.slice(6, 9);
+                }
+            }
+            
+            e.target.value = formattedValue;
+            validateForm(); // Validar formulario cada vez que cambie el teléfono
+        });
+
+        // Event listeners para los checkboxes
+        document.getElementById('terms').addEventListener('change', validateForm);
+        document.getElementById('privacy').addEventListener('change', validateForm);
+        
+        // Validación inicial al cargar la página
+        validateForm();
+    </script>
+
+    <!-- Footer de Copyright -->
+    <footer class="mt-8 text-center">
+        <p class="text-text-secondary text-xs">
+            © 2025 Placenet, Internet of Places S.L.<br>Todos los derechos reservados.
+        </p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación SMS - SocialApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#FBF8F3',
+                        'text-primary': '#000122',
+                        'text-secondary': '#6C6051',
+                        'btn-inactive': '#C6B7A4',
+                        'btn-active': '#635FE5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bg-primary min-h-screen flex flex-col justify-center items-center p-4">
+        <!-- Back Button -->
+        <div class="fixed top-8 left-6 z-10">
+            <button onclick="goBack()" class="w-12 h-12 bg-white hover:bg-gray-50 rounded-full flex items-center justify-center text-text-secondary hover:text-btn-active transition-all duration-200 shadow-lg hover:shadow-xl border border-gray-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+        </div>
+<!-- Logo Header -->
+        <div class="mb-8">
+            <img src="../img/logo-icon.png" alt="PlaceNet Logo" class="h-16 w-auto mx-auto">
+        </div>
+        <div class="p-8 w-full max-w-md relative overflow-hidden">
+            
+            
+            <!-- Header -->
+            <div class="text-center mb-8">
+                
+                <h2 class="text-2xl font-bold text-text-primary mb-3">Verificación SMS</h2>
+                <p class="text-text-secondary mb-2">Hemos enviado un código al número:</p>
+                <p class="text-btn-active font-semibold text-lg" id="displayPhone">+34 612 345 678</p>
+            </div>
+            
+            <!-- Verification Form -->
+            <form id="verificationForm" class="space-y-6">
+                <div class="text-center">
+                    <label class="block text-sm font-medium text-text-primary mb-4">
+                        Introduce el código de verificación
+                    </label>
+                    <div class="flex justify-center gap-3 mb-6">
+                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 border-gray-200 rounded-lg focus:border-btn-active focus:outline-none transition-colors" id="digit1">
+                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 border-gray-200 rounded-lg focus:border-btn-active focus:outline-none transition-colors" id="digit2">
+                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 border-gray-200 rounded-lg focus:border-btn-active focus:outline-none transition-colors" id="digit3">
+                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 border-gray-200 rounded-lg focus:border-btn-active focus:outline-none transition-colors" id="digit4">
+                    </div>
+                </div>
+                
+                <div class="text-center mb-6">
+                    <p class="text-text-secondary">
+                        El código expira en: <span id="countdown" class="font-semibold">05:00</span>
+                    </p>
+                </div>
+                
+                <button 
+                    type="submit" 
+                    id="verifyBtn"
+                    disabled
+                    class="w-full bg-btn-inactive text-white py-3 px-6 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Verificar
+                </button>
+            </form>
+            
+            <!-- Resend Section -->
+            <div class="text-center mt-6 space-y-2">
+                <p class="text-text-secondary text-sm">¿No recibiste el código?</p>
+                <button 
+                    id="resendBtn" 
+                    disabled
+                    class="text-btn-active font-medium hover:underline disabled:text-btn-inactive disabled:no-underline transition-colors"
+                >
+                    Reenviar código (30s)
+                </button>
+            </div>
+            
+            <!-- Footer -->
+            <div class="text-center pt-6 border-t border-gray-100">
+                <p class="text-text-secondary text-sm">
+                    
+                    <strong>Tip:</strong> Revisa tu bandeja de SMS o mensajes
+                </p>
+            </div>
+        </div>
+
+    <script>
+        let countdown = 300; // 5 minutes
+        let resendCountdown = 30; // 30 seconds
+        let countdownInterval;
+        let resendInterval;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Display phone number from previous step
+            const phoneNumber = sessionStorage.getItem('phoneNumber');
+            if (phoneNumber) {
+                document.getElementById('displayPhone').textContent = formatPhoneNumber(phoneNumber);
+            }
+
+            startCountdown();
+            startResendCountdown();
+            setupDigitInputs();
+        });
+
+        function formatPhoneNumber(phone) {
+            if (phone.startsWith('+34')) {
+                const number = phone.slice(3);
+                return `+34 ${number.slice(0, 3)} ${number.slice(3, 6)} ${number.slice(6)}`;
+            }
+            return phone;
+        }
+
+        function setupDigitInputs() {
+            const digits = document.querySelectorAll('input[id^="digit"]');
+            
+            digits.forEach((digit, index) => {
+                digit.addEventListener('input', function(e) {
+                    const value = e.target.value;
+                    
+                    // Only allow numbers
+                    if (!/^\d$/.test(value) && value !== '') {
+                        e.target.value = '';
+                        return;
+                    }
+
+                    // Move to next digit
+                    if (value && index < digits.length - 1) {
+                        digits[index + 1].focus();
+                    }
+
+                    checkAllDigits();
+                });
+
+                digit.addEventListener('keydown', function(e) {
+                    // Handle backspace
+                    if (e.key === 'Backspace' && !this.value && index > 0) {
+                        digits[index - 1].focus();
+                        digits[index - 1].value = '';
+                    }
+                });
+            });
+        }
+
+        function checkAllDigits() {
+            const digits = document.querySelectorAll('input[id^="digit"]');
+            const verifyBtn = document.getElementById('verifyBtn');
+            
+            const allFilled = Array.from(digits).every(digit => digit.value !== '');
+            
+            if (allFilled) {
+                verifyBtn.disabled = false;
+                verifyBtn.className = 'w-full bg-btn-active text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-600 transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg';
+            } else {
+                verifyBtn.disabled = true;
+                verifyBtn.className = 'w-full bg-btn-inactive text-white py-3 px-6 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
+            }
+        }
+
+        function startCountdown() {
+            const countdownEl = document.getElementById('countdown');
+            
+            countdownInterval = setInterval(() => {
+                countdown--;
+                
+                const minutes = Math.floor(countdown / 60);
+                const seconds = countdown % 60;
+                
+                countdownEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    showExpiredMessage();
+                }
+            }, 1000);
+        }
+
+        function startResendCountdown() {
+            const resendBtn = document.getElementById('resendBtn');
+            
+            resendBtn.disabled = true;
+            resendBtn.textContent = `Reenviar código (${resendCountdown}s)`;
+            
+            resendInterval = setInterval(() => {
+                resendCountdown--;
+                resendBtn.textContent = `Reenviar código (${resendCountdown}s)`;
+                
+                if (resendCountdown <= 0) {
+                    clearInterval(resendInterval);
+                    resendBtn.disabled = false;
+                    resendBtn.textContent = 'Reenviar código';
+                }
+            }, 1000);
+        }
+
+        function showExpiredMessage() {
+            alert('El código ha expirado. Solicita un nuevo código para continuar.');
+            
+            // Disable verify button and clear inputs
+            const verifyBtn = document.getElementById('verifyBtn');
+            const digits = document.querySelectorAll('input[id^="digit"]');
+            
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = 'Código expirado';
+            
+            digits.forEach(digit => {
+                digit.value = '';
+                digit.disabled = true;
+            });
+        }
+
+        // Form submission
+        document.getElementById('verificationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const digits = document.querySelectorAll('input[id^="digit"]');
+            const code = Array.from(digits).map(digit => digit.value).join('');
+            
+            // Here you would integrate with your app's verification logic
+            console.log('Verify code:', code);
+            
+            // For demo purposes, any 6-digit code works
+            if (code.length === 6) {
+                sessionStorage.setItem('verified', 'true');
+                console.log('Verification successful, navigate to signup');
+            } else {
+                alert('Código incorrecto. Inténtalo de nuevo.');
+            }
+        });
+
+        // Resend button
+        document.getElementById('resendBtn').addEventListener('click', function() {
+            countdown = 300;
+            resendCountdown = 30;
+            
+            clearInterval(countdownInterval);
+            clearInterval(resendInterval);
+            startCountdown();
+            startResendCountdown();
+            
+            alert('Código reenviado correctamente');
+            
+            // Clear and enable inputs
+            const digits = document.querySelectorAll('input[id^="digit"]');
+            digits.forEach(digit => {
+                digit.value = '';
+                digit.disabled = false;
+            });
+            digits[0].focus();
+            
+            checkAllDigits();
+        });
+
+        function goBack() {
+            // Integration point for your app navigation
+            console.log('Navigate back to login');
+        }
+    </script>
+
+  
+</body>
+</html>
