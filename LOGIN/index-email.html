@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - SocialApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#FBF8F3',
+                        'text-primary': '#000122',
+                        'text-secondary': '#6C6051',
+                        'btn-inactive': '#C6B7A4',
+                        'btn-active': '#635FE5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bg-primary min-h-screen flex flex-col justify-center items-center p-4">
+    <!-- Back Button -->
+            <div class="w-full max-w-md mb-6 ml-10">
+                <button onclick="goBack()" class="w-12 h-12 bg-white hover:bg-gray-50 rounded-full flex items-center justify-center text-text-secondary hover:text-btn-active transition-all duration-200 shadow-lg hover:shadow-xl border border-gray-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+            </div>
+        <!-- Logo Header -->
+        <div class="mb-8">
+            <img src="../img/logo-icon.png" alt="PlaceNet Logo" class="h-16 w-auto mx-auto">
+        </div>
+
+        <div class=" p-8 w-full max-w-md relative overflow-hidden">
+            
+            
+            <!-- Encabezado del formulario -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-text-primary mb-2">Iniciar Sesión</h2>
+                <p class="text-text-secondary text-sm">Introduce tu email y contraseña para entrar</p>
+            </div>
+            
+            <!-- Login Form -->
+            <div class="mb-6">
+                
+                <form id="loginForm" class="space-y-6">
+                    <!-- Campo de Email -->
+                    <div class="space-y-2">
+                        <label for="email" class="block text-sm font-medium text-text-primary">
+                            Correo electrónico
+                        </label>
+                        <div class="relative">
+                            <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </div>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                placeholder="tu@email.com" 
+                                required
+                                class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-btn-active focus:outline-none transition-colors"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Campo de Contraseña -->
+                    <div class="space-y-2">
+                        <label for="password" class="block text-sm font-medium text-text-primary">
+                            Contraseña
+                        </label>
+                        <div class="relative">
+                            <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <circle cx="12" cy="16" r="1"></circle>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                            </div>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                placeholder="Tu contraseña" 
+                                required
+                                class="w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-lg focus:border-btn-active focus:outline-none transition-colors"
+                            >
+                            <button 
+                                type="button" 
+                                id="togglePassword"
+                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors"
+                            >
+                                <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Checkboxes de términos y privacidad -->
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3">
+                            <input 
+                                type="checkbox" 
+                                id="terms" 
+                                required
+                                class="mt-1 h-4 w-4 text-btn-active border-2 border-gray-300 rounded focus:ring-btn-active focus:ring-2 focus:ring-opacity-50"
+                            >
+                            <label for="terms" class="text-sm text-text-secondary leading-5">
+                                Acepto los 
+                                <a href="https://placenet.app/terms.html" class="underline font-medium hover:underline">términos de uso</a>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-start gap-3">
+                            <input 
+                                type="checkbox" 
+                                id="privacy" 
+                                required
+                                class="mt-1 h-4 w-4 text-btn-active border-2 border-gray-300 rounded focus:ring-btn-active focus:ring-2 focus:ring-opacity-50"
+                            >
+                            <label for="privacy" class="text-sm text-text-secondary leading-5">
+                                Acepto la 
+                                <a href="https://placenet.app/privacidad.html" class="underline font-medium hover:underline">política de privacidad</a>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button 
+                        type="submit" 
+                        id="submitBtn"
+                        disabled
+                        class="w-full py-3 px-6 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all duration-200 bg-btn-inactive text-white cursor-not-allowed"
+                    >
+                        Iniciar Sesión
+                    </button>
+                </form>
+
+                
+                
+               
+                
+               
+            </div>
+            
+            <!-- Footer -->
+            <div class="text-center pt-6 border-t border-gray-100">
+                <!-- Enlace para recuperar contraseña -->
+                
+                <p class="text-text-secondary text-sm">
+                    ¿Olvidaste tu contraseña?
+                    <a href="#support" class="underline font-medium hover:underline">Ayuda</a>
+                </p>
+            </div>
+        </div>
+
+    <script>
+        // Función para validar email
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Función para validar el formulario y activar/desactivar el botón
+        function validateForm() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const termsAccepted = document.getElementById('terms').checked;
+            const privacyAccepted = document.getElementById('privacy').checked;
+            const submitBtn = document.getElementById('submitBtn');
+            
+            const isEmailValid = isValidEmail(email);
+            const isPasswordValid = password.length >= 6;
+            const isFormValid = isEmailValid && isPasswordValid && termsAccepted && privacyAccepted;
+            
+            if (isFormValid) {
+                submitBtn.disabled = false;
+                submitBtn.className = "w-full bg-btn-active text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-btn-active focus:ring-opacity-50 transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg cursor-pointer";
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.className = "w-full py-3 px-6 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all duration-200 bg-btn-inactive text-white cursor-not-allowed";
+            }
+        }
+
+        // Toggle para mostrar/ocultar contraseña
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.innerHTML = `
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                `;
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerHTML = `
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                `;
+            }
+        });
+
+        // Login form handling
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            // Store credentials for authentication (you would integrate this with your backend)
+            console.log('Login attempt:', { email, password: '***' });
+            
+            // Here you would integrate with your authentication system
+            // For now, we'll just show a success message or redirect
+            alert('Formulario válido. Aquí se integraría con el sistema de autenticación.');
+        });
+
+        // Event listeners para validación en tiempo real
+        document.getElementById('email').addEventListener('input', validateForm);
+        document.getElementById('password').addEventListener('input', validateForm);
+        document.getElementById('terms').addEventListener('change', validateForm);
+        document.getElementById('privacy').addEventListener('change', validateForm);
+        
+        // Validación inicial al cargar la página
+        validateForm();
+
+        // Mostrar feedback visual para email válido/inválido
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value.trim();
+            if (email && !isValidEmail(email)) {
+                this.classList.add('border-red-400');
+                this.classList.remove('border-gray-200');
+            } else {
+                this.classList.remove('border-red-400');
+                this.classList.add('border-gray-200');
+            }
+        });
+
+        // Mostrar feedback visual para contraseña
+        document.getElementById('password').addEventListener('blur', function() {
+            const password = this.value;
+            if (password && password.length < 6) {
+                this.classList.add('border-red-400');
+                this.classList.remove('border-gray-200');
+            } else {
+                this.classList.remove('border-red-400');
+                this.classList.add('border-gray-200');
+            }
+        });
+    </script>
+
+    <!-- Footer de Copyright -->
+    <footer class="mt-8 text-center">
+        <p class="text-text-secondary text-xs">
+            © 2025 Placenet, Internet of Places S.L.<br>Todos los derechos reservados.
+        </p>
+    </footer>
+</body>
+</html>

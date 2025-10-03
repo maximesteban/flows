@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accede a Placenet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#FBF8F3',
+                        'text-primary': '#000122',
+                        'text-secondary': '#6C6051',
+                        'btn-inactive': '#C6B7A4',
+                        'btn-active': '#635FE5'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'float': 'float 3s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .animate-gradient {
+            background-size: 200% 200%;
+            animation: gradient 3s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .backdrop-blur-sm {
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="bg-bg-primary min-h-screen flex flex-col justify-center items-center p-4">
+    <!-- Logo Header -->
+    <div class="mb-8">
+        <img src="../img/logo-icon.png" alt="PlaceNet Logo" class="h-16 w-auto mx-auto">
+    </div>
+
+    <div class="w-full max-w-2xl">
+        <!-- Título principal de bienvenida -->
+        <div class="text-center mb-12">
+            <div class="mb-6">
+                <h1 class="text-5xl md:text-6xl font-bold text-text-primary mb-4 leading-tight">
+                    Bienvenido a Placenet
+                </h1>
+            </div>
+            
+            
+        </div>
+
+        <!-- Sección de selección de organización -->
+        <div class="  p-8">
+            <!-- Encabezado del formulario -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-semibold text-text-primary mb-3">Selecciona tu Organización</h2>
+                
+            </div>
+        
+        <!-- Barra de búsqueda con dropdown -->
+        <div class="space-y-4 px-6">
+            <div class="relative">
+                <label for="organizationSearch" class="block text-sm font-medium text-text-primary mb-2">
+                    Buscar
+                </label>
+                <div class="relative">
+                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="M21 21l-4.35-4.35"></path>
+                        </svg>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="organizationSearch" 
+                        placeholder="Busca tu organización o haz clic para ver todas..."
+                        autocomplete="off"
+                        class="w-full pl-10 pr-10 py-3 border-2 border-gray-200 rounded-lg focus:border-btn-active focus:outline-none transition-colors"
+                    >
+                    <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary">
+                        <svg id="dropdownArrow" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200">
+                            <path d="M6 9l6 6 6-6"></path>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Dropdown con organizaciones -->
+                <div id="organizationDropdown" class="absolute z-10 w-full bg-white border-2 border-gray-200 rounded-lg shadow-xl mt-2 max-h-64 overflow-y-auto hidden">
+                    <!-- Empresa Tech -->
+                    <a href="https://dashboard.placenet.app" class="org-item block px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors" data-name="empresa tech solutions">
+                        <span class="text-text-primary hover:text-btn-active transition-colors">Placenet</span>
+                    </a>
+
+                    <!-- Healthcare Plus -->
+                    <a href="https://bourgeois.dashboard.placenet.app" class="org-item block px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors" data-name="healthcare plus medical">
+                        <span class="text-text-primary hover:text-btn-active transition-colors">Bourgeois Fincas</span>
+                    </a>
+
+                    <!-- EduConnect -->
+                    <a href="https://canfelipa.dashboard.placenet.app" class="org-item block px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors" data-name="educonnect institute">
+                        <span class="text-text-primary hover:text-btn-active transition-colors">Can Felipa</span>
+                    </a>
+                    
+                    <!-- Retail Hub -->
+                    <a href="https://rfea.dashboard.placenet.app" class="org-item block px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors" data-name="retail hub commerce">
+                        <span class="text-text-primary hover:text-btn-active transition-colors">Real Federación Española de Atletismo</span>
+                    </a>
+                    
+                    <!-- FinTech Bank -->
+                    <a href="https://crec.dashboard.placenet.app" class="org-item block px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors" data-name="fintech banking corp">
+                        <span class="text-text-primary hover:text-btn-active transition-colors">CREC Coworkings</span>
+                    </a>
+                    
+                   
+                                
+
+                </div>
+
+                <!-- Mensaje cuando no hay resultados -->
+                <div id="noResults" class="absolute z-10 w-full bg-white border-2 border-gray-200 rounded-lg shadow-xl mt-2 p-6 text-center hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-3 text-text-secondary opacity-50">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="M21 21l-4.35-4.35"></path>
+                    </svg>
+                    <p class="text-text-secondary mb-2">No se encontraron organizaciones</p>
+                    <p class="text-sm text-text-secondary">Intenta con otros términos de búsqueda</p>
+                </div>
+            </div>
+        </div>
+
+            <!-- Enlaces adicionales -->
+            <div class="text-center mt-8 pt-6 border-t border-gray-100">
+                <p class="text-sm text-text-secondary mb-3">
+                    ¿No encuentras tu organización?
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                    <a href="#" class="text-btn-active hover:underline font-medium text-sm flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        Contactar con soporte
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer decorativo -->
+        <div class="text-center mt-12">
+            <div class="flex items-center justify-center space-x-8 text-text-secondary/60 text-sm">
+                
+                <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <circle cx="12" cy="16" r="1"></circle>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <span>Conexión segura</span>
+                </div>
+            </div>
+            <p class="text-xs text-text-secondary/40 mt-4">
+                © 2025 Placenet, Internet of Places S.L.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('organizationSearch');
+            const dropdown = document.getElementById('organizationDropdown');
+            const dropdownArrow = document.getElementById('dropdownArrow');
+            const noResults = document.getElementById('noResults');
+            const orgItems = document.querySelectorAll('.org-item');
+
+            let isDropdownOpen = false;
+
+            // Función para mostrar dropdown
+            function showDropdown() {
+                dropdown.classList.remove('hidden');
+                noResults.classList.add('hidden');
+                dropdownArrow.style.transform = 'rotate(180deg)';
+                isDropdownOpen = true;
+            }
+
+            // Función para ocultar dropdown
+            function hideDropdown() {
+                dropdown.classList.add('hidden');
+                noResults.classList.add('hidden');
+                dropdownArrow.style.transform = 'rotate(0deg)';
+                isDropdownOpen = false;
+            }
+
+            // Función para filtrar organizaciones
+            function filterOrganizations(query) {
+                const searchTerm = query.toLowerCase().trim();
+                let visibleCount = 0;
+
+                orgItems.forEach(item => {
+                    const orgName = item.getAttribute('data-name').toLowerCase();
+                    const orgTitle = item.querySelector('span').textContent.toLowerCase();
+                    
+                    const matches = orgName.includes(searchTerm) || 
+                                  orgTitle.includes(searchTerm);
+                    
+                    if (matches || searchTerm === '') {
+                        item.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                // Mostrar mensaje de no resultados si no hay coincidencias
+                if (visibleCount === 0 && searchTerm !== '') {
+                    dropdown.classList.add('hidden');
+                    noResults.classList.remove('hidden');
+                } else {
+                    dropdown.classList.remove('hidden');
+                    noResults.classList.add('hidden');
+                }
+
+                return visibleCount;
+            }
+
+            // Event listeners para el input de búsqueda
+            searchInput.addEventListener('focus', function() {
+                showDropdown();
+                filterOrganizations(this.value);
+            });
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value;
+                filterOrganizations(query);
+                
+                if (!isDropdownOpen) {
+                    showDropdown();
+                }
+            });
+
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    hideDropdown();
+                    this.blur();
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    // Si hay solo un resultado visible, hacer clic en él
+                    const visibleItems = Array.from(orgItems).filter(item => 
+                        item.style.display !== 'none'
+                    );
+                    if (visibleItems.length === 1) {
+                        visibleItems[0].click();
+                    }
+                }
+            });
+
+            // Cerrar dropdown al hacer clic fuera
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && 
+                    !dropdown.contains(e.target) && 
+                    !noResults.contains(e.target)) {
+                    hideDropdown();
+                }
+            });
+
+            // Event listeners para los enlaces de organización
+            orgItems.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Efecto visual al hacer clic
+                    this.style.transform = 'scale(0.98)';
+                    this.style.transition = 'transform 0.1s ease';
+                    
+                    // Actualizar el input con el nombre seleccionado
+                    const orgName = this.querySelector('span').textContent;
+                    searchInput.value = orgName;
+                    
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 100);
+                    
+                    // Cerrar dropdown después de un breve delay
+                    setTimeout(() => {
+                        hideDropdown();
+                    }, 150);
+                });
+
+                // Efectos hover mejorados
+                link.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(4px)';
+                    this.style.transition = 'all 0.2s ease';
+                });
+
+                link.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+
+            // Click en la flecha para toggle del dropdown
+            dropdownArrow.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (isDropdownOpen) {
+                    hideDropdown();
+                } else {
+                    searchInput.focus();
+                    showDropdown();
+                    filterOrganizations(searchInput.value);
+                }
+            });
+
+            // Animación de entrada para las organizaciones
+            setTimeout(() => {
+                orgItems.forEach((item, index) => {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(10px)';
+                    
+                    setTimeout(() => {
+                        item.style.transition = 'all 0.3s ease';
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, index * 50);
+                });
+            }, 500);
+
+            // Placeholder dinámico
+            const placeholders = [
+                'Busca tu organización...',
+            ];
+            
+            let placeholderIndex = 0;
+            setInterval(() => {
+                if (!searchInput.value && !isDropdownOpen) {
+                    placeholderIndex = (placeholderIndex + 1) % placeholders.length;
+                    searchInput.placeholder = placeholders[placeholderIndex];
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

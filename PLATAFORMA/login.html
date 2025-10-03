@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accede a Placenet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#FBF8F3',
+                        'text-primary': '#000122',
+                        'text-secondary': '#6C6051',
+                        'btn-inactive': '#C6B7A4',
+                        'btn-active': '#635FE5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bg-primary min-h-screen flex flex-col justify-center items-center p-4">
+    <!-- Logo Header -->
+    <div class="mb-8">
+        <img src="../img/logo-icon.png" alt="PlaceNet Logo" class="h-16 w-auto mx-auto"> <!--Cambiar los logos en lso distintos tenants apra mejor personalizacion?-->
+    </div>
+
+    <div class="w-full max-w-md">
+        <!-- Encabezado del formulario -->
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-text-primary mb-2">Accede a Placenet</h2>
+            <p class="text-text-secondary text-sm">
+                Accede con tu cuenta de Placenet,<br>
+                introduce email y contraseña.
+            </p>
+        </div>
+        
+        <!-- Login Form -->
+        <form id="loginForm" class="space-y-6 px-6">
+            <div class="space-y-2">
+                <label for="usuario" class="block text-sm font-medium text-text-primary">
+                    Usuario
+                </label>
+                <div class="relative">
+                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                            <path d="M16 12v1.5a2.5 2.5 0 0 0 5 0v-1.5a9 9 0 1 0 -5.5 8.28"></path>
+                        </svg>
+                       
+                    </div>
+                    <input 
+                        type="email" 
+                        id="usuario" 
+                        name="usuario" 
+                        value="social@placenet.app"
+                        placeholder="Tu email"
+                        required
+                        class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-btn-active focus:outline-none transition-colors"
+                    >
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label for="password" class="block text-sm font-medium text-text-primary">
+                    Password
+                </label>
+                <div class="relative">
+                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z"></path>
+                            <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"></path>
+                            <path d="M8 11v-4a4 4 0 1 1 8 0v4"></path>
+                        </svg>
+                    </div>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="Tu contraseña"
+                        required
+                        class="w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-lg focus:border-btn-active focus:outline-none transition-colors"
+                    >
+                    <button 
+                        type="button" 
+                        id="togglePassword"
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <button 
+                type="submit" 
+                class="w-full bg-btn-active text-white py-3 px-6 rounded-2xl font-semibold transition-all duration-200 hover:bg-opacity-90 transform hover:scale-105"
+            >
+                Acceder
+            </button>
+        </form>
+
+        <!-- Enlaces adicionales -->
+        <div class="text-center mt-6 space-y-2">
+            <a href="#" class="text-sm text-text-secondary hover:text-btn-active transition-colors">
+                ¿Olvidaste tu contraseña?
+            </a>
+            
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.getElementById('togglePassword');
+
+            // Toggle password visibility
+            toggleButton.addEventListener('click', function() {
+                const eyeOpenSVG = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                `;
+                const eyeClosedSVG = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.585 10.587a2 2 0 0 0 2.829 2.828"></path>
+                        <path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87"></path>
+                        <path d="M3 3l18 18"></path>
+                    </svg>
+                `;
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleButton.innerHTML = eyeClosedSVG;
+                } else {
+                    passwordInput.type = 'password';
+                    toggleButton.innerHTML = eyeOpenSVG;
+                }
+            });
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const usuario = document.getElementById('usuario').value;
+                const password = document.getElementById('password').value;
+
+                // Validaciones básicas
+                if (!usuario || !password) {
+                    alert('Por favor, completa todos los campos');
+                    return;
+                }
+
+                if (!isValidEmail(usuario)) {
+                    alert('Por favor, introduce un email válido');
+                    return;
+                }
+
+                // Simulación de autenticación
+                console.log('Intentando login con:', { usuario, password });
+                
+                // Aquí iría la lógica real de autenticación
+                // Por ahora simulamos un login exitoso
+                alert('¡Login exitoso! Redirigiendo...');
+                
+                // Redirigir a la plataforma
+                // window.location.href = '../PLATAFORMA/index.html';
+            });
+
+            // Función para validar email
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            // Limpiar el campo de contraseña al cargar
+            passwordInput.value = '';
+        });
+    </script>
+</body>
+</html>
