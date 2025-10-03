@@ -22,16 +22,17 @@
     </script>
 </head>
 <body class="bg-bg-primary min-h-screen flex flex-col justify-center items-center p-4">
+    <!-- Back Button -->
+        <div class="fixed top-8 left-6 z-10">
+            <button onclick="goBack()" class="w-12 h-12 bg-white hover:bg-gray-50 rounded-full flex items-center justify-center text-text-secondary hover:text-btn-active transition-all duration-200 shadow-lg hover:shadow-xl border border-gray-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+        </div>
         
         <div class="p-8 w-full max-w-md relative overflow-hidden">
-            <!-- Back Button -->
-            <div class="mb-6">
-                <button onclick="goBack()" class="w-12 h-12 bg-white hover:bg-gray-50 rounded-full flex items-center justify-center text-text-secondary hover:text-btn-active transition-all duration-200 shadow-lg hover:shadow-xl border border-gray-200">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-            </div>
+            
             
             <!-- Step Info -->
             <div class="text-center mb-8">
