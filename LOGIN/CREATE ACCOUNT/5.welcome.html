@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Bienvenido! - SocialApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#FBF8F3',
+                        'text-primary': '#000122',
+                        'text-secondary': '#6C6051',
+                        'btn-inactive': '#C6B7A4',
+                        'btn-active': '#635FE5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bg-primary min-h-screen flex flex-col justify-center items-center p-4">
+
+<!-- Logo Header -->
+        <div class="mb-8">
+            <img src="../../img/logo-icon.png" alt="PlaceNet Logo" class="h-16 w-auto mx-auto">
+        </div>
+    <div class="p-8 w-full max-w-4xl relative overflow-hidden">
+        <!-- Success Animation -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-text-primary mb-2">Ya estás en </h1>
+            <img src="../../img/logotipo.png" alt="Logo PlaceNet" class="h-10 w-auto mx-auto">
+            <p class="text-md text-text-secondary mt-6">Tu cuenta ha sido creada con éxito</p>
+        </div>
+            
+            
+       
+        
+        <!-- Tips Section -->
+        <div class="bg-white rounded-xl p-6 mb-8">
+            <h4 class="text-md font-semibold text-text-primary mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-btn-active" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Consejos para empezar
+            </h4>
+            <ul class="space-y-2 text-text-secondary text-sm">
+                <li class="flex items-start">
+                    <span class="text-btn-active mr-2 font-bold">•</span>
+                    Recuerda activar tu localización para conectar con personas cerca
+                </li>
+                <li class="flex items-start">
+                    <span class="text-btn-active mr-2 font-bold">•</span>
+                    Respeta a los demás usuarios y mantén un ambiente positivo
+                </li>
+                <li class="flex items-start">
+                    <span class="text-btn-active mr-2 font-bold">•</span>
+                    Completa tu biografía para que otros sepan más sobre ti
+                </li>
+                <li class="flex items-start">
+                    <span class="text-btn-active mr-2 font-bold">•</span>
+                    Activa las notificaciones para no perderte nada importante
+                </li>
+            </ul>
+        </div>
+
+        <!-- Welcome Actions -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-8">
+            
+            <button id="startExploringBtn" class="flex-1 bg-btn-active text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-indigo-600 transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg">
+                ¡Empezar a conectar!
+            </button>
+
+        </div>
+    </div>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load user data from previous steps
+            loadUserProfile();
+            
+            // Button handlers
+            document.getElementById('startExploringBtn').addEventListener('click', function() {
+                console.log('Start exploring - navigate to main app');
+                showSuccessNotification('¡Perfecto! Te llevamos al feed principal');
+                
+                // Add celebration effect
+                createCelebrationEffect();
+            });
+
+            document.getElementById('customizeProfileBtn').addEventListener('click', function() {
+                console.log('Customize profile - navigate to profile editor');
+                showSuccessNotification('Abriendo editor de perfil...');
+            });
+
+            function loadUserProfile() {
+                try {
+                    // Get stored user data from previous steps
+                    const signupData = JSON.parse(sessionStorage.getItem('signupData') || '{}');
+                    const avatarData = JSON.parse(sessionStorage.getItem('avatarData') || '{}');
+                    const interests = JSON.parse(sessionStorage.getItem('selectedInterests') || '[]');
+                    const socialConnections = JSON.parse(sessionStorage.getItem('socialConnections') || '[]');
+
+                    // Update user info display
+                    if (avatarData.username) {
+                        document.getElementById('finalUsername').textContent = `@${avatarData.username}`;
+                    }
+                    
+                    if (avatarData.displayName) {
+                        document.getElementById('finalFullName').textContent = avatarData.displayName;
+                    } else if (signupData.name) {
+                        const fullName = `${signupData.name} ${signupData.surname || ''}`.trim();
+                        document.getElementById('finalFullName').textContent = fullName;
+                    }
+                    
+                    if (avatarData.avatarUrl) {
+                        document.getElementById('finalAvatar').src = avatarData.avatarUrl;
+                    }
+
+                    // Update summary counts
+                    const interestsCount = interests.length;
+                    const socialCount = socialConnections.length;
+                    
+                    document.getElementById('interestsCount').textContent = 
+                        interestsCount > 0 ? `${interestsCount} intereses seleccionados` : 'Sin intereses aún';
+                    
+                    document.getElementById('socialCount').textContent = 
+                        socialCount > 0 ? `${socialCount} redes conectadas` : 'Sin redes conectadas';
+
+                    // Create complete user profile for storage
+                    const completeProfile = {
+                        ...signupData,
+                        ...avatarData,
+                        interests,
+                        socialConnections,
+                        registrationCompleted: true,
+                        registrationDate: new Date().toISOString()
+                    };
+
+                    // Store complete profile (integrate with your app's storage system)
+                    sessionStorage.setItem('completeUserProfile', JSON.stringify(completeProfile));
+                    
+                    console.log('Complete user profile:', completeProfile);
+
+                } catch (error) {
+                    console.error('Error loading user profile:', error);
+                    
+                    // Set fallback values
+                    document.getElementById('finalUsername').textContent = '@nuevousuario';
+                    document.getElementById('finalFullName').textContent = 'Nuevo Usuario';
+                    document.getElementById('interestsCount').textContent = 'Perfil nuevo';
+                    document.getElementById('socialCount').textContent = 'Sin conexiones aún';
+                }
+            }
+
+            function createCelebrationEffect() {
+                // Create confetti animation
+                const colors = ['#635FE5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+                
+                for (let i = 0; i < 30; i++) {
+                    setTimeout(() => {
+                        createConfettiPiece(colors[Math.floor(Math.random() * colors.length)]);
+                    }, i * 50);
+                }
+            }
+
+            function createConfettiPiece(color) {
+                const confetti = document.createElement('div');
+                confetti.style.cssText = `
+                    position: fixed;
+                    width: 10px;
+                    height: 10px;
+                    background: ${color};
+                    left: ${Math.random() * 100}vw;
+                    top: -20px;
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 1000;
+                    animation: confettiFall 4s linear forwards;
+                `;
+                
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 4000);
+            }
+
+            function showSuccessNotification(message) {
+                const notification = document.createElement('div');
+                notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // Animate in
+                setTimeout(() => {
+                    notification.classList.remove('translate-x-full');
+                }, 100);
+                
+                // Animate out
+                setTimeout(() => {
+                    notification.classList.add('translate-x-full');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+
+            // Add CSS animation for confetti
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes confettiFall {
+                    to {
+                        transform: translateY(100vh) rotate(720deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Add initial celebration effect after page load
+            setTimeout(createCelebrationEffect, 1000);
+        });
+    </script>
+</body>
+</html>

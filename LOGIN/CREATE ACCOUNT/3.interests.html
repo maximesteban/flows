@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Intereses - SocialApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#FBF8F3',
+                        'text-primary': '#000122',
+                        'text-secondary': '#6C6051',
+                        'btn-inactive': '#C6B7A4',
+                        'btn-active': '#635FE5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bg-primary min-h-screen flex flex-col justify-center items-center p-4">
+    <!-- Back Button -->
+        <div class="fixed top-8 left-6 z-10">
+            <button onclick="goBack()" class="w-12 h-12 bg-white hover:bg-gray-50 rounded-full flex items-center justify-center text-text-secondary hover:text-btn-active transition-all duration-200 shadow-lg hover:shadow-xl border border-gray-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+        </div>
+        
+
+        <div class="p-8 w-full max-w-2xl relative overflow-hidden">
+            
+            
+            <!-- Step Info -->
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-text-primary mb-2">Crea tu avatar</h2>
+                <p class="text-text-secondary mb-3">Selecciona tus temas favoritos para personalizar tu experiencia</p>
+                <span class="inline-block bg-gray-100 text-text-secondary px-3 py-1 rounded-full text-xs font-medium">
+                    Paso 3 de 4
+                </span>
+            </div>
+            
+            <!-- Form -->
+            <form id="interestsForm" class="space-y-6">
+                <!-- Selection Counter -->
+                <div id="selectionCounter" class="p-4 bg-gray-100 rounded-lg text-center">
+                    <p class="text-text-secondary">
+                        Has seleccionado <span id="selectedCount" class="font-bold text-text-primary">0</span> de al menos 3 intereses
+                    </p>
+                </div>
+                
+                
+                
+                <!-- Interests Grid -->
+                <div class="space-y-6">
+                    <div class="interest-category">
+                        <div class="flex flex-wrap gap-2 align-center justify-center">
+                            <button type="button" class="tag-btn" data-category="arte" data-tag="art">Art</button>
+                            <button type="button" class="tag-btn" data-category="arte" data-tag="books">Books</button>
+                            <button type="button" class="tag-btn" data-category="arte" data-tag="cinema">Cinema</button>
+                            <button type="button" class="tag-btn" data-category="arte" data-tag="music">Music</button>
+                            <button type="button" class="tag-btn" data-category="arte" data-tag="photo">Photo</button>
+                            <button type="button" class="tag-btn" data-category="tech" data-tag="tech">Tech</button>
+                            <button type="button" class="tag-btn" data-category="tech" data-tag="gamer">Gamer</button>
+                            <button type="button" class="tag-btn" data-category="tech" data-tag="socialmedia">Social media</button>
+                            <button type="button" class="tag-btn" data-category="deporte" data-tag="fitness">Fitness</button>
+                            <button type="button" class="tag-btn" data-category="deporte" data-tag="sports">Sports</button>
+                            <button type="button" class="tag-btn" data-category="deporte" data-tag="nature">Nature</button>
+                            <button type="button" class="tag-btn" data-category="viajes" data-tag="travel">Travel</button>
+                            <button type="button" class="tag-btn" data-category="viajes" data-tag="turist">Turist</button>
+                            <button type="button" class="tag-btn" data-category="viajes" data-tag="coffee">Coffee</button>
+                            <button type="button" class="tag-btn" data-category="viajes" data-tag="foodie">Foodie</button>
+                            <button type="button" class="tag-btn" data-category="viajes" data-tag="fashion">Fashion</button>
+                            <button type="button" class="tag-btn" data-category="social" data-tag="party">Party</button>
+                            <button type="button" class="tag-btn" data-category="social" data-tag="local">Local</button>
+                            <button type="button" class="tag-btn" data-category="social" data-tag="newintown">New in Town</button>
+                            <button type="button" class="tag-btn" data-category="social" data-tag="lgbtq">LGBTQ+</button>
+                            <button type="button" class="tag-btn" data-category="social" data-tag="activist">Activist</button>
+                            <button type="button" class="tag-btn" data-category="personal" data-tag="chill">Chill</button>
+                            <button type="button" class="tag-btn" data-category="personal" data-tag="student">Student</button>
+                            <button type="button" class="tag-btn" data-category="personal" data-tag="petlover">Pet Lover</button>
+                            <button type="button" class="tag-btn" data-category="personal" data-tag="tattoos">Tattoos</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Form Actions -->
+                <button 
+                    type="submit" 
+                    id="continueBtn"
+                    disabled
+                    class="w-full bg-btn-inactive text-white py-3 px-6 rounded-lg font-semibold transition-all duration-200 cursor-not-allowed"
+                >
+                    Continuar
+                </button>
+            </form>
+        </div>
+
+    <style>
+        .tag-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6C6051;
+            background: white;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .tag-btn:hover {
+            border-color: #635FE5;
+            color: #635FE5;
+        }
+        
+        .tag-btn.selected {
+            background: #635FE5;
+            border-color: #635FE5;
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        
+        .quick-btn {
+            padding: 0.375rem 0.75rem;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #6C6051;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .quick-btn:hover {
+            border-color: #635FE5;
+            background: #dbeafe;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('interestsForm');
+            const tagButtons = document.querySelectorAll('.tag-btn');
+            const selectedCount = document.getElementById('selectedCount');
+            const continueBtn = document.getElementById('continueBtn');
+            const selectionCounter = document.getElementById('selectionCounter');
+            
+            let selectedInterests = new Set();
+            const minInterests = 3;
+
+            // Initialize
+            tagButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleInterest(this);
+                });
+            });
+
+            function toggleInterest(button) {
+                const category = button.dataset.category;
+                const tag = button.dataset.tag;
+                const interestId = `${category}-${tag}`;
+                
+                if (selectedInterests.has(interestId)) {
+                    selectedInterests.delete(interestId);
+                    button.classList.remove('selected');
+                } else {
+                    selectedInterests.add(interestId);
+                    button.classList.add('selected');
+                }
+                
+                updateUI();
+            }
+
+            function updateUI() {
+                const count = selectedInterests.size;
+                selectedCount.textContent = count;
+                
+                if (count >= minInterests) {
+                    selectionCounter.className = 'p-2 bg-gray-50 rounded text-center border border-gray-200';
+                    selectionCounter.innerHTML = `
+                        <p class="text-sm text-text-secondary">
+                            Has seleccionado <span class="font-medium text-text-primary">${count}</span> intereses ✓
+                        </p>
+                    `;
+                    continueBtn.disabled = false;
+                    continueBtn.className = 'w-full bg-btn-active text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-600 transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg cursor-pointer';
+                } else {
+                    selectionCounter.className = 'p-2 bg-gray-100 rounded text-center';
+                    selectionCounter.innerHTML = `
+                        <p class="text-sm text-text-secondary">
+                            Has seleccionado <span class="font-medium text-text-primary">${count}</span> de al menos ${minInterests} intereses
+                        </p>
+                    `;
+                    continueBtn.disabled = true;
+                    continueBtn.className = 'w-full bg-btn-inactive text-white py-3 px-6 rounded-lg font-semibold transition-all duration-200 cursor-not-allowed';
+                }
+            }
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (selectedInterests.size < minInterests) {
+                    alert(`Selecciona al menos ${minInterests} intereses para continuar`);
+                    return;
+                }
+                
+                // Store selected interests
+                const interestsArray = Array.from(selectedInterests).map(id => {
+                    const [category, tag] = id.split('-');
+                    return { category, tag };
+                });
+                
+                sessionStorage.setItem('selectedInterests', JSON.stringify(interestsArray));
+                
+                console.log('Navigate to social connect with interests:', interestsArray);
+            });
+
+            function goBack() {
+                console.log('Navigate back to create avatar');
+            }
+
+            // Initialize UI
+            updateUI();
+        });
+    </script>
+
+    
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Avatar - SocialApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#FBF8F3',
+                        'text-primary': '#000122',
+                        'text-secondary': '#6C6051',
+                        'btn-inactive': '#C6B7A4',
+                        'btn-active': '#635FE5'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .user-tag {
+            background-color: #f3f4f6;
+            border: 1px solid #d1d5db;
+            color: #6b7280;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .user-tag.selected {
+            background-color: #635FE5;
+            border-color: #635FE5;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-bg-primary min-h-screen flex flex-col justify-center items-center p-4">
+    <!-- Back Button -->
+            <div class="w-full max-w-md mb-6 ml-10">
+                <button onclick="goBack()" class="w-12 h-12 bg-white hover:bg-gray-50 rounded-full flex items-center justify-center text-text-secondary hover:text-btn-active transition-all duration-200 shadow-lg hover:shadow-xl border border-gray-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+            </div>
+        
+        <div class="p-8 w-full max-w-md relative overflow-hidden">
+            
+            
+            <!-- Step Info -->
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-text-primary mb-2">Vista previa</h2>
+                <p class="text-text-secondary text-sm">Así es como otros te verán</p>
+            </div>
+            
+            <!-- Avatar Preview Card -->
+            <div class=" p-8 border border-gray-100">
+                <!-- Avatar Image -->
+                <div class="text-center mb-6">
+                    <div 
+                        id="avatarDisplay" 
+                        class="w-32 h-32 mx-auto rounded-full shadow-xl bg-gradient-to-br from-btn-active to-purple-600 flex items-center justify-center"
+                    >
+                        <span class="text-4xl font-bold text-white" id="avatarInitial">?</span>
+                    </div>
+                </div>
+                
+                <!-- Avatar Info -->
+                <div class="text-center space-y-4">
+                    <!-- Name -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-text-primary" id="displayName">Usuario</h3>
+                    </div>
+                    
+                    <!-- Bio -->
+                    <div class="px-4">
+                        <p class="text-text-secondary text-sm leading-relaxed" id="displayBio">
+                            "Esta es una descripción de ejemplo que muestra cómo se verá tu perfil"
+                        </p>
+                    </div>
+                    
+                    <!-- User Tags -->
+                    <div class="px-4" id="userTagsSection">
+                        <div class="flex flex-wrap gap-2 justify-center mt-4" id="userTags">
+                            <!-- Tags will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Social Media Icons -->
+                    <div class="flex justify-center space-x-6 pt-4 border-t border-gray-100">
+                        <!-- Instagram -->
+                        <div class="social-icon " id="instagram-icon">
+                            <svg class="w-6 h-6 text-text-secondary hover:text-pink-500 transition-colors cursor-pointer" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </div>
+                        
+                        <!-- X (Twitter) -->
+                        <div class="social-icon " id="twitter-icon">
+                            <svg class="w-6 h-6 text-text-secondary hover:text-black transition-colors cursor-pointer" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </div>
+                        
+                        <!-- TikTok -->
+                        <div class="social-icon " id="tiktok-icon">
+                            <svg class="w-6 h-6 text-text-secondary hover:text-black transition-colors cursor-pointer" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                            </svg>
+                        </div>
+                        
+                        <!-- LinkedIn -->
+                        <div class="social-icon " id="linkedin-icon">
+                            <svg class="w-6 h-6 text-text-secondary hover:text-blue-600 transition-colors cursor-pointer" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Button -->
+            <div class="mt-8">
+                <button 
+                    id="editBtn"
+                    class="w-full bg-white border-2 border-btn-active text-btn-active py-3 px-6 rounded-lg font-semibold hover:bg-btn-active hover:text-white transition-all duration-200 flex items-center justify-center"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Editar perfil
+                </button>
+            </div>
+        </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const avatarDisplay = document.getElementById('avatarDisplay');
+            const avatarInitial = document.getElementById('avatarInitial');
+            const displayName = document.getElementById('displayName');
+            const displayBio = document.getElementById('displayBio');
+            const editBtn = document.getElementById('editBtn');
+            
+            // Initialize with user data
+            initializePreview();
+
+            function initializePreview() {
+                const signupData = JSON.parse(sessionStorage.getItem('signupData') || '{}');
+                const avatarData = JSON.parse(sessionStorage.getItem('avatarData') || '{}');
+                const socialData = JSON.parse(sessionStorage.getItem('socialData') || '{}');
+                const interestsData = JSON.parse(sessionStorage.getItem('interestsData') || '{}');
+                
+                // Set name
+                let name = avatarData.name || signupData.firstName || 'Usuario';
+                displayName.textContent = name;
+                
+                // Set initial
+                avatarInitial.textContent = name.charAt(0).toUpperCase();
+                
+                // Set bio
+                if (avatarData.bio && avatarData.bio.trim()) {
+                    displayBio.textContent = `"${avatarData.bio}"`;
+                } else {
+                    displayBio.textContent = '"Hola, soy nuevo en la plataforma 👋"';
+                }
+                
+                // Set avatar image if exists
+                if (avatarData.hasImage && avatarData.imageUrl) {
+                    avatarDisplay.innerHTML = `
+                        <img src="${avatarData.imageUrl}" alt="Avatar" class="w-full h-full object-cover rounded-full">
+                    `;
+                }
+                
+                // Generate gradient colors based on name
+                generateAvatarGradient(name);
+                
+                // Update social media icons
+                updateSocialIcons(socialData);
+                
+                // Display user tags (example tags for now, will be loaded from backend later)
+                const exampleTags = interestsData.selectedTags || ['Art', 'Music', 'Tech', 'Travel', 'Coffee'];
+                displayUserTags(exampleTags);
+            }
+
+            function updateSocialIcons(socialData) {
+                // Instagram
+                const instagramIcon = document.getElementById('instagram-icon');
+                if (socialData.instagram && socialData.instagram.trim()) {
+                    instagramIcon.classList.remove('opacity-50');
+                    instagramIcon.classList.add('opacity-100');
+                    instagramIcon.querySelector('svg').classList.add('text-pink-500');
+                    instagramIcon.querySelector('svg').classList.remove('text-text-secondary');
+                }
+                
+                // Twitter/X
+                const twitterIcon = document.getElementById('twitter-icon');
+                if (socialData.twitter && socialData.twitter.trim()) {
+                    twitterIcon.classList.remove('opacity-50');
+                    twitterIcon.classList.add('opacity-100');
+                    twitterIcon.querySelector('svg').classList.add('text-black');
+                    twitterIcon.querySelector('svg').classList.remove('text-text-secondary');
+                }
+                
+                // TikTok
+                const tiktokIcon = document.getElementById('tiktok-icon');
+                if (socialData.tiktok && socialData.tiktok.trim()) {
+                    tiktokIcon.classList.remove('opacity-50');
+                    tiktokIcon.classList.add('opacity-100');
+                    tiktokIcon.querySelector('svg').classList.add('text-black');
+                    tiktokIcon.querySelector('svg').classList.remove('text-text-secondary');
+                }
+                
+                // LinkedIn
+                const linkedinIcon = document.getElementById('linkedin-icon');
+                if (socialData.linkedin && socialData.linkedin.trim()) {
+                    linkedinIcon.classList.remove('opacity-50');
+                    linkedinIcon.classList.add('opacity-100');
+                    linkedinIcon.querySelector('svg').classList.add('text-blue-600');
+                    linkedinIcon.querySelector('svg').classList.remove('text-text-secondary');
+                }
+            }
+
+            function displayUserTags(selectedTags) {
+                const userTagsContainer = document.getElementById('userTags');
+                const userTagsSection = document.getElementById('userTagsSection');
+                
+                // Clear existing tags
+                userTagsContainer.innerHTML = '';
+                
+                if (selectedTags && selectedTags.length > 0) {
+                    // Show the tags section
+                    userTagsSection.style.display = 'block';
+                    
+                    // Create tag elements
+                    selectedTags.forEach((tag, index) => {
+                        const tagElement = document.createElement('span');
+                        tagElement.className = 'user-tag selected';
+                        tagElement.textContent = capitalizeFirst(tag);
+                        
+                        // Add staggered animation
+                        tagElement.style.opacity = '0';
+                        tagElement.style.transform = 'translateY(10px)';
+                        
+                        setTimeout(() => {
+                            tagElement.style.transition = 'all 0.3s ease';
+                            tagElement.style.opacity = '1';
+                            tagElement.style.transform = 'translateY(0)';
+                        }, index * 100 + 200);
+                        
+                        userTagsContainer.appendChild(tagElement);
+                    });
+                } else {
+                    // Hide tags section if no tags
+                    userTagsSection.style.display = 'none';
+                }
+            }
+
+            function capitalizeFirst(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            }
+
+            function generateAvatarGradient(name) {
+                // Generate consistent colors based on name
+                const colors = [
+                    'from-purple-400 to-pink-400',
+                    'from-blue-400 to-cyan-400',
+                    'from-green-400 to-blue-400',
+                    'from-yellow-400 to-orange-400',
+                    'from-red-400 to-pink-400',
+                    'from-indigo-400 to-purple-400',
+                    'from-teal-400 to-green-400',
+                    'from-orange-400 to-red-400'
+                ];
+                
+                const hash = name.split('').reduce((a, b) => {
+                    a = ((a << 5) - a) + b.charCodeAt(0);
+                    return a & a;
+                }, 0);
+                
+                const colorIndex = Math.abs(hash) % colors.length;
+                avatarDisplay.className = avatarDisplay.className.replace(/from-\w+-\d+ to-\w+-\d+/, colors[colorIndex]);
+            }
+
+            // Edit button handler
+            editBtn.addEventListener('click', function() {
+                // Navigate back to edit form
+                window.location.href = 'create-avatar.html';
+            });
+
+            // Back button handler
+            window.goBack = function() {
+                window.location.href = 'create-avatar.html';
+            };
+
+            // Add some interactive effects
+            avatarDisplay.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+
+            avatarDisplay.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+
+            // Animate social icons on load
+            setTimeout(() => {
+                const socialIcons = document.querySelectorAll('.social-icon');
+                socialIcons.forEach((icon, index) => {
+                    setTimeout(() => {
+                        icon.style.opacity = '0';
+                        icon.style.transform = 'translateY(10px)';
+                        icon.style.transition = 'all 0.3s ease';
+                        
+                        setTimeout(() => {
+                            icon.style.opacity = icon.classList.contains('opacity-50') ? '0.5' : '1';
+                            icon.style.transform = 'translateY(0)';
+                        }, 50);
+                    }, index * 100);
+                });
+            }, 500);
+        });
+    </script>
+
+    
+</body>
+</html>
