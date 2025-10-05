@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'Global-Neutral-30': '#F5F5F5',
+                        'Global-Neutral-10': '#FAFAFA',
+                        'Specific-Text-main': '#333333'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .notification-dropdown {
+            display: none;
+            position: fixed;
+            top: 65px;
+            right: 15px;
+            width: 360px;
+            max-width: calc(100vw - 30px);
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 1000;
+            height: auto;
+            min-height: 200px;
+            max-height: 580px;
+            overflow: hidden;
+            border: 1px solid #E5E7EB;
+        }
+
+        @media (max-width: 640px) {
+            .notification-dropdown {
+                width: calc(100vw - 20px);
+                right: 10px;
+                top: 70px;
+            }
+        }
+
+        .notification-dropdown.show {
+            display: block;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notification-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notification-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 640px) {
+            .notification-header {
+                padding: 1rem 1.25rem;
+            }
+        }
+
+        .notification-list {
+            max-height: 480px;
+            overflow-y: hidden;
+            flex-grow: 1;
+        }
+
+        @media (max-width: 640px) {
+            .notification-list {
+                max-height: 440px;
+            }
+        }
+
+        .notification-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notification-section:not(:last-child) {
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .notification-section-content {
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .group-section-content {
+            max-height: 204px;
+        }
+
+        .individual-section-content {
+            max-height: 136px;
+        }
+
+        .notification-category {
+            background: #F9FAFB;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid #E5E7EB;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-indicators {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notification-count {
+            background: #6366F1;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            min-width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scroll-indicator {
+            color: #9CA3AF;
+            opacity: 0.7;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-3px);
+            }
+            60% {
+                transform: translateY(-2px);
+            }
+        }
+
+        .notification-item {
+            border-bottom: 1px solid #F3F4F6;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        @media (max-width: 640px) {
+            .notification-item {
+                padding: 0.65rem 1.25rem;
+            }
+        }
+
+        .notification-item:hover {
+            background-color: #F9FAFB;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #EF4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .bell-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 0.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .bell-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+
+        .bell-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 640px) {
+            .bell-button {
+                top: 15px;
+                right: 15px;
+                width: 2.75rem;
+                height: 2.75rem;
+            }
+        }
+
+
+
+        .btn-primary {
+            background: #635FE5;
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #5A56E0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6B7280;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: #F3F4F6;
+            color: #374151;
+        }
+
+        .clear-all-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #EF4444;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .clear-all-btn:hover {
+            background: #FEF2F2;
+            color: #DC2626;
+            transform: scale(1.05);
+        }
+
+        .group-notification {
+            background: white;
+        }
+
+        .group-notification:hover {
+            background: #F9FAFB;
+        }
+
+        .individual-notification {
+            background: #F8FAFC;
+        }
+
+        .individual-notification:hover {
+            background: #F1F5F9;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    
+
+    <!-- Notification Bell Button (Fixed Position) -->
+    <button class="bell-button" onclick="toggleNotificationDropdown()">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C11.45 2 11 2.45 11 3V4.05C8.16 4.55 6 7.03 6 10V16L4 18V19H20V18L18 16V10C18 7.03 15.84 4.55 13 4.05V3C13 2.45 12.55 2 12 2ZM12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22Z"/>
+        </svg>
+        <!-- Notification Badge -->
+        <span class="notification-badge" id="notificationBadge">5</span>
+    </button>
+
+    <!-- Notification Dropdown -->
+    <div id="notificationDropdown" class="notification-dropdown">
+        <div class="notification-content">
+            <!-- Header -->
+            <div class="notification-header">
+                <h3 class="text-lg font-semibold text-gray-800">Notificaciones</h3>
+                <div class="flex items-center space-x-2">
+                    <button class="clear-all-btn" onclick="clearAllNotifications()" title="Eliminar todas las notificaciones">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                    <button class="close-btn" onclick="closeNotificationDropdown()">&times;</button>
+                </div>
+            </div>
+
+            <!-- Notification List -->
+            <div class="notification-list">
+                <!-- Group Chat Section -->
+                <div class="notification-section">
+                    <div class="notification-category">
+                        <span>Chat de Dominio</span>
+                        <div class="category-indicators">
+                            <span class="notification-count">2</span>
+                            <svg class="scroll-indicator w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="notification-section-content group-section-content">
+                        <!-- Group Chat Notification 1 -->
+                        <div class="notification-item group-notification" onclick="handleNotificationClick('group1')">
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="font-semibold text-gray-800">María</p>
+                                    <p class="text-xs text-gray-400">Hace 5 minutos</p>
+                                </div>
+                                <p class="text-gray-600 text-sm">"¿Alguien puede revisar el PR #123?"</p>
+                            </div>
+                        </div>
+
+                        <!-- Group Chat Notification 2 -->
+                        <div class="notification-item group-notification" onclick="handleNotificationClick('group2')">
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="font-semibold text-gray-800">Ana</p>
+                                    <p class="text-xs text-gray-400">Hace 15 minutos</p>
+                                </div>
+                                <p class="text-gray-600 text-sm">Compartió un documento importante</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Individual Chat Section -->
+                <div class="notification-section">
+                    <div class="notification-category">
+                        <span>Mensajes</span>
+                        <div class="category-indicators">
+                            <span class="notification-count">3</span>
+                            <svg class="scroll-indicator w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="notification-section-content individual-section-content">
+                        <!-- Individual Chat Notification 1 -->
+                        <div class="notification-item individual-notification" onclick="handleNotificationClick('individual1')">
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="font-semibold text-gray-800">Carlos Rodríguez</p>
+                                    <p class="text-xs text-gray-400">Hace 30 minutos</p>
+                                </div>
+                                <p class="text-gray-600 text-sm">"¿Podemos hablar sobre el proyecto mañana?"</p>
+                            </div>
+                        </div>
+
+                        <!-- Individual Chat Notification 2 -->
+                        <div class="notification-item individual-notification" onclick="handleNotificationClick('individual2')">
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="font-semibold text-gray-800">Laura Martínez</p>
+                                    <p class="text-xs text-gray-400">Hace 1 hora</p>
+                                </div>
+                                <p class="text-gray-600 text-sm">"Gracias por la ayuda con el código!"</p>
+                            </div>
+                        </div>
+
+                        <!-- Individual Chat Notification 3 -->
+                        <div class="notification-item individual-notification" onclick="handleNotificationClick('individual3')">
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="font-semibold text-gray-800">David García</p>
+                                    <p class="text-xs text-gray-400">Hace 2 horas</p>
+                                </div>
+                                <p class="text-gray-600 text-sm">"¿Has visto mi mensaje anterior?"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Push Notification Controls -->
+            <div class="px-6 py-4 border-t bg-gray-50">
+                <div id="pushNotificationSection">
+                    <!-- When notifications are not enabled -->
+                    <div id="enableNotifications">
+                        <button class="btn-primary" onclick="enablePushNotifications()">
+                            Habilitar Notificaciones Push
+                        </button>
+                    </div>
+                    
+                    <!-- When notifications are denied -->
+                    <div id="notificationsDenied" style="display: none;">
+                        <p class="text-sm text-gray-600 mb-2">
+                            Las notificaciones están deshabilitadas. Habilítalas en la configuración de tu navegador.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State Dropdown (when no notifications) -->
+    <div id="emptyNotificationDropdown" class="notification-dropdown" style="height: 250px;">
+        <div class="notification-content">
+            <div class="notification-header">
+                <h3 class="text-lg font-semibold text-gray-800">Notificaciones</h3>
+                <div class="flex items-center space-x-2">
+                    <button class="close-btn" onclick="closeNotificationDropdown()">&times;</button>
+                </div>
+            </div>
+            
+            <div class="p-6 text-center flex-grow flex flex-col justify-center">
+                <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5-5V9c0-3.314-2.314-6-5.177-6C7.314 3 5 5.686 5 9v3l-5 5h5m9.177-2.177A2.828 2.828 0 1112 19.828"></path>
+                </svg>
+                <p class="text-gray-500">No hay notificaciones</p>
+            </div>
+
+            <div class="px-6 py-4 border-t bg-gray-50 flex-shrink-0">
+                <button class="btn-primary" onclick="enablePushNotifications()">
+                    Habilitar Notificaciones Push
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let dropdownOpen = false;
+
+        // Dropdown functions
+        function toggleNotificationDropdown() {
+            if (dropdownOpen) {
+                closeNotificationDropdown();
+            } else {
+                openNotificationDropdown();
+            }
+        }
+
+        function openNotificationDropdown() {
+            // Check if there are notifications
+            const hasNotifications = true; // Change this to false to show empty state
+            
+            if (hasNotifications) {
+                document.getElementById('notificationDropdown').classList.add('show');
+                document.getElementById('emptyNotificationDropdown').classList.remove('show');
+            } else {
+                document.getElementById('emptyNotificationDropdown').classList.add('show');
+                document.getElementById('notificationDropdown').classList.remove('show');
+            }
+            dropdownOpen = true;
+        }
+
+        function closeNotificationDropdown() {
+            document.getElementById('notificationDropdown').classList.remove('show');
+            document.getElementById('emptyNotificationDropdown').classList.remove('show');
+            dropdownOpen = false;
+        }
+
+        // Handle notification click
+        function handleNotificationClick(notificationId) {
+            console.log('Clicked notification:', notificationId);
+            // Here you would navigate to the chat or handle the notification action
+            closeNotificationDropdown();
+        }
+
+        // Enable push notifications
+        function enablePushNotifications() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(function (permission) {
+                    if (permission === 'granted') {
+                        console.log('Notifications enabled');
+                        document.getElementById('enableNotifications').style.display = 'none';
+                        // You could show a success message here
+                    } else if (permission === 'denied') {
+                        document.getElementById('enableNotifications').style.display = 'none';
+                        document.getElementById('notificationsDenied').style.display = 'block';
+                    }
+                });
+            } else {
+                console.log('Browser does not support notifications');
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('notificationDropdown');
+            const emptyDropdown = document.getElementById('emptyNotificationDropdown');
+            const bellButton = document.querySelector('.bell-button');
+            
+            if (dropdownOpen && 
+                !dropdown.contains(event.target) && 
+                !emptyDropdown.contains(event.target) && 
+                !bellButton.contains(event.target)) {
+                closeNotificationDropdown();
+            }
+        });
+
+        // Clear all notifications
+        function clearAllNotifications() {
+            // Hide all notification items
+            const notificationItems = document.querySelectorAll('.notification-item');
+            notificationItems.forEach(item => {
+                item.style.display = 'none';
+            });
+            
+            // Update notification count to 0
+            updateNotificationCount(0);
+            
+            // Show empty state after a brief delay
+            setTimeout(() => {
+                closeNotificationDropdown();
+                // Switch to empty state
+                document.getElementById('notificationDropdown').style.display = 'none';
+                document.getElementById('emptyNotificationDropdown').classList.add('show');
+                dropdownOpen = true;
+            }, 300);
+            
+            console.log('All notifications cleared');
+        }
+
+        // Update notification badge count
+        function updateNotificationCount(count) {
+            const badge = document.getElementById('notificationBadge');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial notification count
+            updateNotificationCount(5);
+        });
+    </script>
+</body>
+</html>
