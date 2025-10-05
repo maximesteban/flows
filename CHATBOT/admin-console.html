@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Console - ChatBot Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#FBF8F3',
+                        'text-primary': '#000122',
+                        'text-secondary': '#6C6051',
+                        'btn-inactive': '#C6B7A4',
+                        'btn-active': '#635FE5',
+                        'sidebar-bg': '#1F2937',
+                        'sidebar-text': '#E5E7EB'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #F9FAFB;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            width: 100%;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .btn-primary {
+            background: #635FE5;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background: #5A56E0;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #F3F4F6;
+            color: #374151;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid #D1D5DB;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+
+        .btn-secondary:hover {
+            background: #E5E7EB;
+        }
+
+        .btn-danger {
+            background: #EF4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        .card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #635FE5;
+            box-shadow: 0 0 0 3px rgba(99, 95, 229, 0.1);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #635FE5;
+            box-shadow: 0 0 0 3px rgba(99, 95, 229, 0.1);
+        }
+
+        .file-upload {
+            border: 2px dashed #D1D5DB;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .file-upload:hover {
+            border-color: #635FE5;
+            background: rgba(99, 95, 229, 0.05);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th {
+            background: #F9FAFB;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .table tr:hover {
+            background: #F9FAFB;
+        }
+
+        .table th:last-child,
+        .table td:last-child {
+            text-align: right;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-inactive {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+       
+
+        .tab-buttons {
+            display: flex;
+            border-bottom: 2px solid #E5E7EB;
+            margin-bottom: 2rem;
+        }
+
+        .tab-button {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: #6B7280;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab-button.active {
+            color: #635FE5;
+            border-bottom-color: #635FE5;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .add-btn {
+            background: #635FE5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .add-btn:hover {
+            background: #5A56E0;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <h1 class="text-3xl font-bold text-gray-800">ChatBot  Console</h1>
+            </div>
+            <!-- Documents Section -->
+            <div class="card">
+                <div class="section-header">
+                    <h3 class="text-xl font-semibold">Archivos</h3>
+                    <button class="add-btn">+</button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Fecha</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>guia-eventos.pdf</td>
+                            <td>05/10/2025</td>
+                            <td>
+                                <button class="btn-danger">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>faq-mensajeria.txt</td>
+                            <td>04/10/2025</td>
+                            <td>
+                                <button class="btn-danger">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>manual-perfil.docx</td>
+                            <td>03/10/2025</td>
+                            <td>
+                                <button class="btn-danger">Eliminar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Prompts Section -->
+            <div class="card">
+                <div class="section-header">
+                    <h3 class="text-xl font-semibold">Prompts</h3>
+                    <button class="add-btn">+</button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Fecha</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Crear Eventos</td>
+                            <td>05/10/2025</td>
+                            <td>
+                                <button class="btn-secondary mr-2">Editar</button>
+                                <button class="btn-danger">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Ayuda Mensajería</td>
+                            <td>04/10/2025</td>
+                            <td>
+                                <button class="btn-secondary mr-2">Editar</button>
+                                <button class="btn-danger">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Configurar Perfil</td>
+                            <td>03/10/2025</td>
+                            <td>
+                                <button class="btn-secondary mr-2">Editar</button>
+                                <button class="btn-danger">Eliminar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            
+            
+        </div>
+    </div>
+
+    
+</body>
+</html>

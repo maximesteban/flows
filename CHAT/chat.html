@@ -35,103 +35,209 @@
         }
     </script>
     <style>
+        :root {
+            --color-n30: #FBF8F3;
+            --color-n70: #635FE5;
+        }
+
         .chat-container {
-            height: 100vh;
             display: flex;
             flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            background-image: url("../img/chat-bg.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
         }
-        
-        .chat-messages {
-            flex: 1;
+
+        .chat-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(251, 248, 243, 0.8);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .messages-container {
+            flex-grow: 1;
             overflow-y: auto;
+            padding: 1rem;
+            padding-bottom: 5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
             scrollbar-width: thin;
             scrollbar-color: #C6B7A4 transparent;
+            position: relative;
+            z-index: 2;
         }
-        
-        .chat-messages::-webkit-scrollbar {
+
+        .messages-container::-webkit-scrollbar {
             width: 6px;
         }
         
-        .chat-messages::-webkit-scrollbar-track {
+        .messages-container::-webkit-scrollbar-track {
             background: transparent;
         }
         
-        .chat-messages::-webkit-scrollbar-thumb {
+        .messages-container::-webkit-scrollbar-thumb {
             background-color: #C6B7A4;
             border-radius: 3px;
         }
-        
-        .message-bubble {
+
+        .message {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            background-color: #fff;
             max-width: 70%;
+            align-self: flex-start;
             word-wrap: break-word;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
             animation: slideUp 0.2s ease-out;
-            margin-bottom: 0.5rem;
         }
-        
-        .message-sent {
-            background: linear-gradient(135deg, #635FE5 0%, #7C77FF 100%);
-            margin-left: auto;
+
+        .message.is-own-message {
+            align-self: flex-end;
+            background:#d4d2f0;
+            color: #000122;
         }
-        
-        .message-received {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid #e2e8f0;
-            margin-right: auto;
+
+        .message.is-own-message .avatar-name {
+            color: #000122;
         }
-        
-        .chat-input {
+
+        .message.is-own-message .message-time {
+            color: #999;
+        }
+
+        .message-body {
+            flex: 1;
+        }
+
+        .avatar-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            color: #000122;
+            font-size: 0.875rem;
+        }
+
+        .message-form {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-top: 1px solid #ddd;
+            background-color: rgba(240, 242, 245, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .message-input {
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            border-radius: 1rem;
+            padding: 0.8rem 1rem;
+            margin-right: 0.5rem;
+            font-size: 1rem;
+            background: #fff;
+            outline: none;
             transition: all 0.2s ease;
         }
-        
-        .chat-input:focus {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 95, 229, 0.15);
+
+        .message-input:focus {
+            border-color: var(--color-n70);
+            box-shadow: 0 0 0 2px rgba(99, 95, 229, 0.1);
         }
-        
+
         .send-button {
-            background: linear-gradient(135deg, #635FE5 0%, #7C77FF 100%);
+            border: none;
+            background-color: var(--color-n70);
+            color: white;
+            border-radius: 1rem;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(99, 95, 229, 0.2);
         }
-        
+
         .send-button:hover:not(:disabled) {
-            background: linear-gradient(135deg, #5A56E0 0%, #7470F5 100%);
-            box-shadow: 0 4px 12px rgba(99, 95, 229, 0.4);
+            background-color: #5A56E0;
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 95, 229, 0.3);
         }
-        
-        .send-button:active:not(:disabled) {
-            transform: translateY(0);
-            box-shadow: 0 2px 6px rgba(99, 95, 229, 0.3);
-        }
-        
+
         .send-button:disabled {
-            background: linear-gradient(135deg, #C6B7A4 0%, #B8A99A 100%);
+            background-color: #C6B7A4;
             cursor: not-allowed;
             opacity: 0.6;
-            transform: none;
-            box-shadow: none;
         }
-        
-        .send-button:disabled svg {
-            opacity: 0.7;
+
+        .date-divider {
+            text-align: center;
+            margin: 1rem 0;
         }
-        
-        .send-button svg {
-            transition: all 0.2s ease;
+
+        .date-divider span {
+            background-color: #C6B7A4;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.75rem;
+            font-size: 0.75rem;
+            color: #ffffff;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
         }
-        
-        .send-button:hover:not(:disabled) svg {
-            transform: rotate(15deg);
+
+        .message-time {
+            font-size: 0.75rem;
+            color: #999;
+            margin-left: 0.5rem;
+        }
+
+        .avatar-image {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #635FE5 0%, #7C77FF 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .bg-red-100 {
+            background-color: #fee2e2;
+            color: #dc2626;
         }
     </style>
 </head>
 <body class="bg-bg-primary">
     <!-- Chat Container -->
-    <div class="chat-container max-w-4xl mx-auto bg-white shadow-lg">
+    <div class="max-w-4xl mx-auto bg-white shadow-lg h-screen flex flex-col">
         
         <!-- Chat Header -->
-        <div class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+        <div class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between flex-shrink-0">
             <!-- Back Button -->
             <button class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-text-secondary hover:text-text-primary transition-all duration-200">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -148,154 +254,308 @@
             <div class="w-10"></div>
         </div>
 
-        <!-- Chat Messages -->
-        <div class="chat-messages p-6 space-y-4">
-            <!-- Message Received -->
-            <div class="message-bubble message-received p-4 rounded-lg">
-                <div class="flex items-center space-x-3 mb-2">
-                    <div class="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-white font-bold text-xs">JD</span>
-                    </div>
-                    <div class="flex items-center justify-between flex-1">
-                        <h4 class="font-semibold text-text-primary text-sm">Juan Díaz</h4>
-                        <span class="text-xs text-text-secondary">10:30 AM</span>
-                    </div>
-                </div>
-                <p class="text-text-primary ml-11">¡Hola! ¿Cómo estás?</p>
+        <!-- Chat Content -->
+        <div id="chatStatus" data-status="ready">
+            <!-- Error State -->
+            <div id="errorState" class="bg-red-100 p-10 text-center h-full" style="display: none;">
+                Ooops, an error occurred loading the Chat<br>Please reload the page and try again.
             </div>
 
-            <!-- Message Sent -->
-            <div class="message-bubble message-sent p-4 rounded-lg text-white">
-                <div class="flex items-center space-x-3 mb-2">
-                    <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-white font-bold text-xs">TU</span>
+            <!-- Ready State - Chat Container -->
+            <div class="chat-container" id="readyState">
+                <div class="messages-container" id="chatContainer">
+                    <!-- Date Divider -->
+                    <div class="date-divider">
+                        <span>Hoy</span>
                     </div>
-                    <div class="flex items-center justify-between flex-1">
-                        <h4 class="font-semibold text-white text-sm">Tú</h4>
-                        <span class="text-xs text-white/70">10:32 AM</span>
+
+                    <!-- Message Received -->
+                    <div class="message" data-message-id="1">
+                        <div class="avatar-image">JD</div>
+                        <div class="message-body">
+                            <div>
+                                <span class="avatar-name">JuanDíaz</span>
+                                <span class="message-time">10:30</span>
+                            </div>
+                            <div class="content">¡Hola! ¿Cómo estás?</div>
+                        </div>
+                    </div>
+
+                    <!-- Message Sent -->
+                    <div class="message is-own-message" data-message-id="2">
+                        <div class="avatar-image">TU</div>
+                        <div class="message-body">
+                            <div>
+                                <span class="avatar-name">maximesteban</span>
+                                <span class="message-time">10:32</span>
+                            </div>
+                            <div class="content">¡Hola Juan! Todo bien, gracias. ¿Y tú qué tal?</div>
+                        </div>
+                    </div>
+
+                    <!-- Message Received -->
+                    <div class="message" data-message-id="3">
+                        <div class="avatar-image">JD</div>
+                        <div class="message-body">
+                            <div>
+                                <span class="avatar-name">JuanDíaz</span>
+                                <span class="message-time">10:33</span>
+                            </div>
+                            <div class="content">Muy bien también. ¿Tienes planes para el fin de semana?</div>
+                        </div>
+                    </div>
+
+                    <!-- Message Sent -->
+                    <div class="message is-own-message" data-message-id="4">
+                        <div class="avatar-image">TU</div>
+                        <div class="message-body">
+                            <div>
+                                <span class="avatar-name">maximesteban</span>
+                                <span class="message-time">10:35</span>
+                            </div>
+                            <div class="content">Sí, pensaba ir al cine. ¿Te gustaría acompañarme?</div>
+                        </div>
+                    </div>
+
+                    <!-- Message Received -->
+                    <div class="message" data-message-id="5">
+                        <div class="avatar-image">JD</div>
+                        <div class="message-body">
+                            <div>
+                                <span class="avatar-name">JuanDíaz</span>
+                                <span class="message-time">10:36</span>
+                            </div>
+                            <div class="content">¡Me encantaría! ¿Qué película tienes en mente?</div>
+                        </div>
                     </div>
                 </div>
-                <p class="ml-11">¡Hola Juan! Todo bien, gracias. ¿Y tú qué tal?</p>
-            </div>
 
-            <!-- Message Received -->
-            <div class="message-bubble message-received p-4 rounded-lg">
-                <div class="flex items-center space-x-3 mb-2">
-                    <div class="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-white font-bold text-xs">JD</span>
-                    </div>
-                    <div class="flex items-center justify-between flex-1">
-                        <h4 class="font-semibold text-text-primary text-sm">Juan Díaz</h4>
-                        <span class="text-xs text-text-secondary">10:33 AM</span>
-                    </div>
-                </div>
-                <p class="text-text-primary ml-11">Muy bien también. ¿Tienes planes para el fin de semana?</p>
-            </div>
-
-            <!-- Message Sent -->
-            <div class="message-bubble message-sent p-4 rounded-lg text-white">
-                <div class="flex items-center space-x-3 mb-2">
-                    <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-white font-bold text-xs">TU</span>
-                    </div>
-                    <div class="flex items-center justify-between flex-1">
-                        <h4 class="font-semibold text-white text-sm">Tú</h4>
-                        <span class="text-xs text-white/70">10:35 AM</span>
-                    </div>
-                </div>
-                <p class="ml-11">Sí, pensaba ir al cine. ¿Te gustaría acompañarme?</p>
-            </div>
-
-            <!-- Message Received -->
-            <div class="message-bubble message-received p-4 rounded-lg">
-                <div class="flex items-center space-x-3 mb-2">
-                    <div class="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-white font-bold text-xs">JD</span>
-                    </div>
-                    <div class="flex items-center justify-between flex-1">
-                        <h4 class="font-semibold text-text-primary text-sm">Juan Díaz</h4>
-                        <span class="text-xs text-text-secondary">10:36 AM</span>
-                    </div>
-                </div>
-                <p class="text-text-primary ml-11">¡Me encantaría! ¿Qué película tienes en mente?</p>
-            </div>
-
-            <!-- Typing Indicator -->
-            <div class="message-bubble message-received p-4 rounded-lg" id="typingIndicator" style="display: none;">
-                <div class="flex items-center space-x-3 mb-2">
-                    <div class="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-white font-bold text-xs">JD</span>
-                    </div>
-                    <div class="flex items-center justify-between flex-1">
-                        <h4 class="font-semibold text-text-primary text-sm">Juan Díaz</h4>
-                        <span class="text-xs text-text-secondary">Escribiendo...</span>
-                    </div>
-                </div>
-                <div class="flex space-x-1 ml-11">
-                    <div class="w-2 h-2 bg-text-secondary rounded-full animate-bounce"></div>
-                    <div class="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
-                    <div class="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Chat Input -->
-        <div class="bg-white border-t border-gray-200 p-4">
-            <div class="flex items-end space-x-3">
-                
-
-                <!-- Message Input -->
-                <div class="flex-1 relative">
-                    <textarea 
-                        id="messageInput"
-                        placeholder="Escribe un mensaje..."
-                        class="chat-input w-full px-4 py-3 pr-14 border-2 border-gray-200 rounded-2xl resize-none focus:border-btn-active focus:outline-none transition-colors text-text-primary placeholder-text-secondary"
-                        rows="1"
-                    ></textarea>
-                    
-                    <!-- Send Button (positioned inside input) -->
-                    <button 
-                        id="sendButton"
-                        class="send-button absolute right-2 bottom-2 w-10 h-10 rounded-full flex items-center justify-center text-white flex-shrink-0 transition-all duration-200 hover:scale-105 active:scale-95"
-                        disabled
-                    >
-                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                <!-- Message Form -->
+                <form class="message-form" id="messageForm">
+                    <input
+                        type="text"
+                        id="newMessageContent"
+                        placeholder="Type a message..."
+                        class="message-input"
+                        autocomplete="off"
+                    />
+                    <button type="submit" class="send-button" aria-label="Send message" id="sendButton">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="white">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                         </svg>
                     </button>
-                </div>
-
-                
+                </form>
             </div>
         </div>
+
+
     </div>
 
     <script>
-        // Referencias DOM
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        const chatMessages = document.querySelector('.chat-messages');
-        const typingIndicator = document.getElementById('typingIndicator');
-
-        // Auto-resize textarea
-        messageInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            const newHeight = Math.min(this.scrollHeight, 120);
-            this.style.height = newHeight + 'px';
-            
-            // Enable/disable send button
-            const isEmpty = this.value.trim() === '';
-            sendButton.disabled = isEmpty;
-            
-            // Adjust button position for multi-line text
-            if (newHeight > 50) {
-                sendButton.style.bottom = '8px';
-            } else {
-                sendButton.style.bottom = '8px';
+        // Chat state management
+        let status = 'ready'; // 'ready', 'error'
+        let messages = [
+            {
+                id: 1,
+                text: '¡Hola! ¿Cómo estás?',
+                avatar_id: 'jd',
+                avatar_name: 'Juan Díaz',
+                avatar_image: 'JD',
+                created_at: new Date('2025-10-05T10:30:00'),
+                is_own_message: false
+            },
+            {
+                id: 2,
+                text: '¡Hola Juan! Todo bien, gracias. ¿Y tú qué tal?',
+                avatar_id: 'me',
+                avatar_name: 'Tú',
+                avatar_image: 'TU',
+                created_at: new Date('2025-10-05T10:32:00'),
+                is_own_message: true
+            },
+            {
+                id: 3,
+                text: 'Muy bien también. ¿Tienes planes para el fin de semana?',
+                avatar_id: 'jd',
+                avatar_name: 'Juan Díaz',
+                avatar_image: 'JD',
+                created_at: new Date('2025-10-05T10:33:00'),
+                is_own_message: false
+            },
+            {
+                id: 4,
+                text: 'Sí, pensaba ir al cine. ¿Te gustaría acompañarme?',
+                avatar_id: 'me',
+                avatar_name: 'Tú',
+                avatar_image: 'TU',
+                created_at: new Date('2025-10-05T10:35:00'),
+                is_own_message: true
+            },
+            {
+                id: 5,
+                text: '¡Me encantaría! ¿Qué película tienes en mente?',
+                avatar_id: 'jd',
+                avatar_name: 'Juan Díaz',
+                avatar_image: 'JD',
+                created_at: new Date('2025-10-05T10:36:00'),
+                is_own_message: false
             }
+        ];
+        
+        let my_avatar_id = 'me';
+        let newMessageContent = '';
+        let isSending = false;
+
+        // DOM References
+        const chatContainer = document.getElementById('chatContainer');
+        const messageForm = document.getElementById('messageForm');
+        const messageInput = document.getElementById('newMessageContent');
+        const sendButton = document.getElementById('sendButton');
+        const errorState = document.getElementById('errorState');
+        const readyState = document.getElementById('readyState');
+
+        // Utility functions
+        function formatTime(date) {
+            return date.toLocaleTimeString('es-ES', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        }
+
+        function formatDateForDivider(date) {
+            const today = new Date();
+            const messageDate = new Date(date);
+            
+            if (messageDate.toDateString() === today.toDateString()) {
+                return 'Hoy';
+            }
+            
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            if (messageDate.toDateString() === yesterday.toDateString()) {
+                return 'Ayer';
+            }
+            
+            return messageDate.toLocaleDateString('es-ES', { 
+                day: 'numeric', 
+                month: 'long' 
+            });
+        }
+
+        function shouldShowDateDivider(index) {
+            if (index === 0) return true;
+            
+            const currentMessage = messages[index];
+            const previousMessage = messages[index - 1];
+            
+            const currentDate = new Date(currentMessage.created_at).toDateString();
+            const previousDate = new Date(previousMessage.created_at).toDateString();
+            
+            return currentDate !== previousDate;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Send message function
+        function sendMessage() {
+            if (isSending || !newMessageContent.trim()) return;
+            
+            isSending = true;
+            sendButton.disabled = true;
+            messageInput.readonly = true;
+
+            // Create new message
+            const newMessage = {
+                id: messages.length + 1,
+                text: newMessageContent.trim(),
+                avatar_id: my_avatar_id,
+                avatar_name: 'Tú',
+                avatar_image: 'TU',
+                created_at: new Date(),
+                is_own_message: true
+            };
+
+            // Add to messages array
+            messages.push(newMessage);
+            
+            // Clear input
+            const messageText = newMessageContent.trim();
+            newMessageContent = '';
+            messageInput.value = '';
+
+            // Add message to DOM
+            addMessageToDOM(newMessage, messages.length - 1);
+            
+            // Scroll to bottom
+            scrollToBottom();
+
+            // Simulate response (for demo)
+            setTimeout(() => {
+                const responseMessage = {
+                    id: messages.length + 1,
+                    text: '¡Genial! Me parece perfecto 😊',
+                    avatar_id: 'jd',
+                    avatar_name: 'Juan Díaz',
+                    avatar_image: 'JD',
+                    created_at: new Date(),
+                    is_own_message: false
+                };
+                
+                messages.push(responseMessage);
+                addMessageToDOM(responseMessage, messages.length - 1);
+                scrollToBottom();
+                
+                isSending = false;
+                sendButton.disabled = false;
+                messageInput.readonly = false;
+            }, 1500);
+        }
+
+        // Add message to DOM
+        function addMessageToDOM(message, index) {
+            // Check if we need a date divider
+            if (shouldShowDateDivider(index)) {
+                const dateDivider = document.createElement('div');
+                dateDivider.className = 'date-divider';
+                dateDivider.innerHTML = `<span>${formatDateForDivider(message.created_at)}</span>`;
+                chatContainer.appendChild(dateDivider);
+            }
+
+            // Create message element
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${message.is_own_message ? 'is-own-message' : ''}`;
+            messageDiv.setAttribute('data-message-id', message.id);
+            
+            messageDiv.innerHTML = `
+                <div class="avatar-image">${escapeHtml(message.avatar_image)}</div>
+                <div class="message-body">
+                    <div>
+                        <span class="avatar-name">${escapeHtml(message.avatar_name)}</span>
+                        <span class="message-time">${formatTime(message.created_at)}</span>
+                    </div>
+                    <div class="content">${escapeHtml(message.text)}</div>
+                </div>
+            `;
+
+            chatContainer.appendChild(messageDiv);
+        }
+
+        // Scroll to bottom
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Event listeners
+        messageInput.addEventListener('input', function() {
+            newMessageContent = this.value;
+            sendButton.disabled = isSending || !newMessageContent.trim();
         });
 
-        // Send message on Enter (Shift+Enter for new line)
         messageInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -303,81 +563,21 @@
             }
         });
 
-        // Send button click
-        sendButton.addEventListener('click', sendMessage);
+        messageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            sendMessage();
+        });
 
-        // Send message function
-        function sendMessage() {
-            const message = messageInput.value.trim();
-            if (message === '') return;
-
-            // Add message to chat
-            addMessage(message, true);
-            
-            // Clear input
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
-            sendButton.disabled = true;
-
-            // Simulate typing and response (for demo)
-            showTypingIndicator();
-            setTimeout(() => {
-                hideTypingIndicator();
-                addMessage('¡Genial! Me parece perfecto 😊', false);
-            }, 2000);
-        }
-
-        // Add message to chat
-        function addMessage(text, isSent) {
-            const messageDiv = document.createElement('div');
-            const currentTime = new Date().toLocaleTimeString('es-ES', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
-
-            messageDiv.className = `w-full flex ${isSent ? 'justify-end' : 'justify-start'}`;
-            messageDiv.innerHTML = `
-                <div class="message-bubble ${isSent ? 'message-sent text-white' : 'message-received'} p-2 rounded-xl shadow-sm">
-                    <div class="flex items-start space-x-2 ${isSent ? 'flex-row-reverse space-x-reverse' : ''}">
-                        <div class="w-7 h-7 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <span class="text-white font-bold text-xs">${isSent ? 'YO' : 'AM'}</span>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center space-x-1 mb-0.5 ${isSent ? 'justify-end flex-row-reverse space-x-reverse' : 'justify-start'}">
-                                <span class="font-medium text-xs ${isSent ? 'text-white' : 'text-text-primary'}">${isSent ? 'Tú' : 'Ana María'}</span>
-                                <span class="text-xs ${isSent ? 'text-white/60' : 'text-text-secondary'}">${currentTime}</span>
-                            </div>
-                            <p class="text-xs leading-tight ${isSent ? 'text-white text-right' : 'text-text-primary text-left'}">${escapeHtml(text)}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Show typing indicator
-        function showTypingIndicator() {
-            typingIndicator.style.display = 'flex';
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Hide typing indicator
-        function hideTypingIndicator() {
-            typingIndicator.style.display = 'none';
-        }
-
-        // Escape HTML
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Auto-scroll to bottom on load
+        // Initialize chat
         document.addEventListener('DOMContentLoaded', function() {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            if (status === 'error') {
+                errorState.style.display = 'block';
+                readyState.style.display = 'none';
+            } else {
+                errorState.style.display = 'none';
+                readyState.style.display = 'block';
+                scrollToBottom();
+            }
         });
     </script>
 </body>
