@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Anuncio - SocialApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#FBF8F3',
+                        'text-primary': '#000122',
+                        'text-secondary': '#6C6051',
+                        'btn-inactive': '#C6B7A4',
+                        'btn-active': '#635FE5'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-up': 'slideUp 0.2s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .ad-card {
+            transition: all 0.2s ease;
+        }
+        .ad-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 95, 229, 0.15);
+        }
+        .location-badge {
+            background: linear-gradient(135deg, #635FE5 0%, #7C77FF 100%);
+        }
+        .publish-btn {
+            background: linear-gradient(135deg, #635FE5 0%, #7C77FF 100%);
+            transition: all 0.2s ease;
+        }
+        .publish-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 95, 229, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-bg-primary min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Botón Atrás -->
+                <button class="w-10 h-10 bg-btn-inactive hover:bg-gray-200 rounded-full flex items-center justify-center text-white hover:text-text-primary transition-all duration-200" onclick="goBack()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                
+                <!-- Título Centrado -->
+                <div class="flex-1 text-center">
+                    <h1 class="text-2xl font-bold text-text-primary">Crear Anuncio</h1>
+                </div>
+
+                <!-- Spacer para balance -->
+                <div class="w-10"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-6">
+        <!-- Subir Imagen -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6 overflow-hidden">
+            <div class="p-6">
+                <h3 class="text-lg font-semibold text-text-primary mb-3">Imagen del anuncio</h3>
+                <!-- Área de subida de imagen -->
+                <div class="relative">
+                    <input type="file" id="imageUpload" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                    <div id="imagePreview" class="w-full h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-all duration-200" onclick="document.getElementById('imageUpload').click()">
+                        <div class="text-center">
+                            <svg class="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            <p class="text-text-secondary text-sm">Haz clic para subir una imagen</p>
+                            <p class="text-text-secondary text-xs mt-1">PNG, JPG hasta 10MB</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario del Anuncio -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <form id="adForm">
+                <!-- Título del Anuncio -->
+                <div class="mb-6">
+                    <label for="title" class="block text-lg font-semibold text-text-primary mb-3">Título del anuncio</label>
+                    <input 
+                        type="text" 
+                        id="title" 
+                        name="title" 
+                        placeholder="Escribe un título" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-btn-active focus:border-transparent outline-none transition-all duration-200 text-text-primary placeholder-text-secondary"
+                        maxlength="100"
+                        required
+                    >
+                    <p class="text-xs text-text-secondary mt-1">Máximo 100 caracteres</p>
+                </div>
+
+                <!-- Descripción -->
+                <div class="mb-6">
+                    <label for="description" class="block text-lg font-semibold text-text-primary mb-3">Descripción</label>
+                    <textarea 
+                        id="description" 
+                        name="description" 
+                        rows="6" 
+                        placeholder="Describe tu anuncio"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-btn-active focus:border-transparent outline-none transition-all duration-200 text-text-primary placeholder-text-secondary resize-none"
+                        maxlength="500"
+                        required
+                    ></textarea>
+                    <div class="flex justify-between items-center mt-1">
+                        <p class="text-xs text-text-secondary">Sé específico y honesto en tu descripción</p>
+                        <p class="text-xs text-text-secondary"><span id="charCount">0</span>/500</p>
+                    </div>
+                </div>
+
+                <!-- Precio (Opcional) -->
+                <div class="mb-6">
+                    <label for="price" class="block text-lg font-semibold text-text-primary mb-3">Precio <span class="text-sm font-normal text-text-secondary">(opcional)</span></label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary">€</span>
+                        <input 
+                            type="number" 
+                            id="price" 
+                            name="price" 
+                            placeholder="0.00" 
+                            min="0" 
+                            step="0.01"
+                            class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-btn-active focus:border-transparent outline-none transition-all duration-200 text-text-primary placeholder-text-secondary"
+                        >
+                    </div>
+                    <p class="text-xs text-text-secondary mt-1">Deja vacío si es gratis o no aplica</p>
+                </div>
+
+                <!-- Información de Contacto -->
+                <div class="border-t border-gray-100 pt-6">
+                    <h3 class="text-lg font-semibold text-text-primary mb-4">Información de contacto</h3>
+                    
+                    <!-- Método de contacto preferido -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-text-primary mb-2">¿Cómo prefieres que te contacten?</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="contactMethod" value="app" class="w-4 h-4 text-btn-active focus:ring-btn-active border-gray-300" checked>
+                                <span class="text-text-primary">A través de la aplicación</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="contactMethod" value="phone" class="w-4 h-4 text-btn-active focus:ring-btn-active border-gray-300">
+                                <span class="text-text-primary">Por teléfono</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="contactMethod" value="email" class="w-4 h-4 text-btn-active focus:ring-btn-active border-gray-300">
+                                <span class="text-text-primary">Por email</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Campos adicionales según método elegido -->
+                    <div id="phoneField" class="mb-4 hidden">
+                        <label for="phone" class="block text-sm font-medium text-text-primary mb-2">Número de teléfono</label>
+                        <input 
+                            type="tel" 
+                            id="phone" 
+                            name="phone" 
+                            placeholder="+34 123 456 789"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-btn-active focus:border-transparent outline-none transition-all duration-200 text-text-primary placeholder-text-secondary"
+                        >
+                    </div>
+
+                    <div id="emailField" class="mb-4 hidden">
+                        <label for="email" class="block text-sm font-medium text-text-primary mb-2">Correo electrónico</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="tu@email.com"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-btn-active focus:border-transparent outline-none transition-all duration-200 text-text-primary placeholder-text-secondary"
+                        >
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="flex gap-4 mb-6">
+            
+            <button type="submit" form="adForm" id="publish-btn" class="flex-1 text-white px-6 py-4 rounded-xl font-semibold flex items-center justify-center space-x-2 transition-all duration-200 bg-btn-inactive cursor-not-allowed" disabled>
+                
+                <span>Publicar anuncio</span>
+            </button>
+        </div>
+
+        
+    </main>
+
+    <script>
+        // Función para ir atrás
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'muro.html';
+            }
+        }
+
+        // Manejo de la subida de imagen
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 10 * 1024 * 1024) { // 10MB
+                    alert('El archivo es demasiado grande. Máximo 10MB.');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.innerHTML = `
+                        <div class="relative w-full h-full">
+                            <img src="${e.target.result}" class="w-full h-full object-cover rounded-lg" alt="Preview">
+                            <button type="button" onclick="removeImage()" class="absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all duration-200">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    `;
+                    preview.classList.remove('border-dashed', 'border-gray-300');
+                    preview.classList.add('border-solid', 'border-btn-active');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Remover imagen
+        function removeImage() {
+            const preview = document.getElementById('imagePreview');
+            const fileInput = document.getElementById('imageUpload');
+            
+            preview.innerHTML = `
+                <div class="text-center">
+                    <svg class="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    <p class="text-text-secondary text-sm">Haz clic para subir una imagen</p>
+                    <p class="text-text-secondary text-xs mt-1">PNG, JPG hasta 10MB</p>
+                </div>
+            `;
+            preview.classList.remove('border-solid', 'border-btn-active');
+            preview.classList.add('border-dashed', 'border-gray-300');
+            fileInput.value = '';
+        }
+
+        // Función para verificar si todos los campos están completos
+        function checkFormCompletion() {
+            const publishBtn = document.getElementById('publish-btn');
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const contactMethod = document.querySelector('input[name="contactMethod"]:checked');
+            
+            let isComplete = true;
+            
+            // Verificar campos obligatorios
+            if (!title || title.length < 3) isComplete = false;
+            if (!description || description.length < 10) isComplete = false;
+            if (!contactMethod) isComplete = false;
+            
+            // Verificar campos específicos de contacto
+            if (contactMethod) {
+                if (contactMethod.value === 'phone') {
+                    const phoneValue = document.getElementById('phone').value.trim();
+                    if (!phoneValue || !/^\+?[\d\s\-\(\)]+$/.test(phoneValue)) {
+                        isComplete = false;
+                    }
+                } else if (contactMethod.value === 'email') {
+                    const emailValue = document.getElementById('email').value.trim();
+                    if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+                        isComplete = false;
+                    }
+                }
+            }
+            
+            // Habilitar/deshabilitar botón
+            if (isComplete) {
+                publishBtn.disabled = false;
+                publishBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                publishBtn.classList.add('publish-btn');
+            } else {
+                publishBtn.disabled = true;
+                publishBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                publishBtn.classList.remove('publish-btn');
+            }
+        }
+
+        // Contador de caracteres para descripción
+        document.getElementById('description').addEventListener('input', function() {
+            const charCount = this.value.length;
+            document.getElementById('charCount').textContent = charCount;
+            checkFormCompletion();
+        });
+
+        // Mostrar/ocultar campos según método de contacto
+        document.querySelectorAll('input[name="contactMethod"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const phoneField = document.getElementById('phoneField');
+                const emailField = document.getElementById('emailField');
+                const phoneInput = document.getElementById('phone');
+                const emailInput = document.getElementById('email');
+                
+                phoneField.classList.add('hidden');
+                emailField.classList.add('hidden');
+                phoneInput.required = false;
+                emailInput.required = false;
+                
+                if (this.value === 'phone') {
+                    phoneField.classList.remove('hidden');
+                    phoneInput.required = true;
+                } else if (this.value === 'email') {
+                    emailField.classList.remove('hidden');
+                    emailInput.required = true;
+                }
+                
+                checkFormCompletion();
+            });
+        });
+
+        // Función para guardar borrador
+        function saveDraft() {
+            const formData = new FormData(document.getElementById('adForm'));
+            const draftData = {};
+            
+            for (let [key, value] of formData.entries()) {
+                draftData[key] = value;
+            }
+            
+            localStorage.setItem('adDraft', JSON.stringify(draftData));
+            
+            // Mostrar mensaje de confirmación
+            alert('Borrador guardado correctamente');
+        }
+
+        // Función para enviar formulario
+        document.getElementById('adForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // El botón solo está habilitado si todo está válido, así que procedemos directamente
+            
+            // Simular envío
+            const submitBtn = document.getElementById('publish-btn');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = `
+                <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Publicando...</span>
+            `;
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                localStorage.removeItem('adDraft'); // Limpiar borrador
+                alert('¡Anuncio publicado correctamente!');
+                window.location.href = 'muro.html';
+            }, 2000);
+        });
+
+        // Añadir event listeners para verificar completitud en tiempo real
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listeners para campos obligatorios
+            document.getElementById('title').addEventListener('input', checkFormCompletion);
+            document.getElementById('description').addEventListener('input', checkFormCompletion);
+            document.getElementById('phone').addEventListener('input', checkFormCompletion);
+            document.getElementById('email').addEventListener('input', checkFormCompletion);
+            
+            // Verificación inicial
+            setTimeout(checkFormCompletion, 100);
+        });
+
+        // Cargar borrador al cargar la página
+        window.addEventListener('load', function() {
+            const draft = localStorage.getItem('adDraft');
+            if (draft) {
+                const draftData = JSON.parse(draft);
+                
+                if (confirm('Tienes un borrador guardado. ¿Quieres cargarlo?')) {
+                    Object.keys(draftData).forEach(key => {
+                        const field = document.querySelector(`[name="${key}"]`);
+                        if (field) {
+                            if (field.type === 'radio') {
+                                const radio = document.querySelector(`input[name="${key}"][value="${draftData[key]}"]`);
+                                if (radio) radio.checked = true;
+                            } else {
+                                field.value = draftData[key];
+                            }
+                        }
+                    });
+                    
+                    // Actualizar contador de caracteres
+                    const description = document.getElementById('description');
+                    if (description.value) {
+                        document.getElementById('charCount').textContent = description.value.length;
+                    }
+                    
+                    // Mostrar campos de contacto si es necesario
+                    const contactMethod = document.querySelector('input[name="contactMethod"]:checked');
+                    if (contactMethod) {
+                        contactMethod.dispatchEvent(new Event('change'));
+                    }
+                    
+                    // Verificar completitud después de cargar
+                    setTimeout(checkFormCompletion, 200);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

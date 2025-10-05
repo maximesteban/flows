@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Evento - With Me</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#FBF8F3',
+                        'text-primary': '#000122',
+                        'text-secondary': '#6C6051',
+                        'btn-inactive': '#C6B7A4',
+                        'btn-active': '#635FE5'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-up': 'slideUp 0.2s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .ad-card {
+            transition: all 0.2s ease;
+        }
+        .ad-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 95, 229, 0.15);
+        }
+        .location-badge {
+            background: linear-gradient(135deg, #635FE5 0%, #7C77FF 100%);
+        }
+        .publish-btn {
+            background: linear-gradient(135deg, #635FE5 0%, #7C77FF 100%);
+            transition: all 0.2s ease;
+        }
+        .publish-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 95, 229, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-bg-primary min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Botón Atrás -->
+                <button class="w-10 h-10 bg-btn-inactive hover:bg-gray-200 rounded-full flex items-center justify-center text-white hover:text-text-primary transition-all duration-200" onclick="goBack()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                
+                <!-- Título Centrado -->
+                <div class="flex-1 text-center">
+                    <h1 class="text-2xl font-bold text-text-primary">Crear With Me</h1>
+                </div>
+
+                <!-- Spacer para balance -->
+                <div class="w-10"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-6">
+        <form id="eventForm" enctype="multipart/form-data">
+            <!-- Subir Imagen -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6 p-6">
+                <h2 class="text-xl font-semibold text-text-primary mb-4">Imagen</h2>
+                <div class="space-y-4">
+                    <!-- Zona de subida de imagen -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-btn-active transition-colors" onclick="document.getElementById('image-upload').click()">
+                        <div id="image-preview" class="hidden">
+                            <img id="preview-img" src="" alt="Preview" class="max-w-full h-48 object-cover mx-auto rounded-lg">
+                            <p class="text-sm text-text-secondary mt-2">Haz clic para cambiar la imagen</p>
+                        </div>
+                        <div id="upload-placeholder">
+                            <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            <p class="text-text-secondary">Haz clic para subir una imagen</p>
+                            <p class="text-sm text-text-secondary mt-1">PNG, JPG hasta 10MB</p>
+                        </div>
+                        <input type="file" id="image-upload" name="image" accept="image/*" class="hidden" onchange="previewImage(event)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información del Evento -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+                <!-- Título del evento -->
+                <div class="mb-6">
+                    <label for="title" class="block text-lg font-semibold text-text-primary mb-3">Título del evento</label>
+                    <input type="text" id="title" name="title" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-btn-active focus:border-transparent outline-none transition-all"
+                           placeholder="Escribe un titulo">
+                    <div class="error-message hidden text-red-500 text-sm mt-1" id="title-error"></div>
+                </div>
+
+                <!-- Fecha y Hora -->
+                <div class="mb-6">
+                    <label class="block text-lg font-semibold text-text-primary mb-3">Fecha y hora</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="date" class="block text-sm font-medium text-text-secondary mb-2">Fecha</label>
+                            <input type="date" id="date" name="date" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-btn-active focus:border-transparent outline-none transition-all">
+                            <div class="error-message hidden text-red-500 text-sm mt-1" id="date-error"></div>
+                        </div>
+                        <div>
+                            <label for="time" class="block text-sm font-medium text-text-secondary mb-2">Hora</label>
+                            <input type="time" id="time" name="time" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-btn-active focus:border-transparent outline-none transition-all">
+                            <div class="error-message hidden text-red-500 text-sm mt-1" id="time-error"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Descripción -->
+                <div class="mb-6">
+                    <label for="description" class="block text-lg font-semibold text-text-primary mb-3">Descripción del evento</label>
+                    <textarea id="description" name="description" rows="6" required
+                              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-btn-active focus:border-transparent outline-none transition-all resize-none"
+                              placeholder="Describe tu with me"></textarea>
+                    <div class="flex justify-between items-center mt-2">
+                        <div class="error-message hidden text-red-500 text-sm" id="description-error"></div>
+                        <span class="text-sm text-text-secondary" id="char-count">0/500 caracteres</span>
+                    </div>
+                </div>
+
+                <!-- Número de Participantes -->
+                <div class="mb-6">
+                    <label for="participants" class="block text-lg font-semibold text-text-primary mb-3">Número máximo de participantes</label>
+                    <div class="relative">
+                        <input type="number" id="participants" name="participants" min="1" max="50" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-btn-active focus:border-transparent outline-none transition-all"
+                               placeholder="Ej: 5">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-4">
+                            <svg class="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="text-sm text-text-secondary mt-2">Incluye el organizador en el conteo</p>
+                    <div class="error-message hidden text-red-500 text-sm mt-1" id="participants-error"></div>
+                </div>
+
+                <!-- Información de Contacto -->
+                <div class="border-t border-gray-100 pt-6">
+                    <h3 class="text-lg font-semibold text-text-primary mb-4">Información de contacto</h3>
+                    
+                    <!-- Método de contacto preferido -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-text-primary mb-2">¿Cómo prefieres que te contacten?</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="contactMethod" value="app" class="w-4 h-4 text-btn-active focus:ring-btn-active border-gray-300" checked>
+                                <span class="text-text-primary">A través de la aplicación</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="contactMethod" value="phone" class="w-4 h-4 text-btn-active focus:ring-btn-active border-gray-300">
+                                <span class="text-text-primary">Por teléfono</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="contactMethod" value="email" class="w-4 h-4 text-btn-active focus:ring-btn-active border-gray-300">
+                                <span class="text-text-primary">Por email</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Campos adicionales según método elegido -->
+                    <div id="phoneField" class="mb-4 hidden">
+                        <label for="phone" class="block text-sm font-medium text-text-primary mb-2">Número de teléfono</label>
+                        <input 
+                            type="tel" 
+                            id="phone" 
+                            name="phone" 
+                            placeholder="+34 123 456 789"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-btn-active focus:border-transparent outline-none transition-all duration-200 text-text-primary placeholder-text-secondary"
+                        >
+                        <div class="error-message hidden text-red-500 text-sm mt-1" id="phone-error"></div>
+                    </div>
+
+                    <div id="emailField" class="mb-4 hidden">
+                        <label for="email" class="block text-sm font-medium text-text-primary mb-2">Correo electrónico</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="tu@email.com"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-btn-active focus:border-transparent outline-none transition-all duration-200 text-text-primary placeholder-text-secondary"
+                        >
+                        <div class="error-message hidden text-red-500 text-sm mt-1" id="email-error"></div>
+                    </div>
+                </div>
+
+                
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="flex gap-4 mb-6">
+                
+                <button type="submit" id="publish-btn" class="flex-1 text-white px-6 py-4 rounded-xl font-semibold flex items-center justify-center space-x-2 transition-all duration-200 bg-btn-inactive cursor-not-allowed" disabled>
+                   
+                    <span>Publicar evento</span>
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        // Función para ir atrás
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'withme.html';
+            }
+        }
+
+        // Preview de imagen
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview-img').src = e.target.result;
+                    document.getElementById('image-preview').classList.remove('hidden');
+                    document.getElementById('upload-placeholder').classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Contador de caracteres para descripción
+        document.getElementById('description').addEventListener('input', function() {
+            const maxLength = 500;
+            const currentLength = this.value.length;
+            const charCount = document.getElementById('char-count');
+            
+            charCount.textContent = `${currentLength}/${maxLength} caracteres`;
+            
+            if (currentLength > maxLength) {
+                charCount.classList.add('text-red-500');
+                this.value = this.value.substring(0, maxLength);
+                charCount.textContent = `${maxLength}/${maxLength} caracteres`;
+            } else {
+                charCount.classList.remove('text-red-500');
+            }
+            
+            // Verificar completitud del formulario
+            checkFormCompletion();
+        });
+
+        // Función para verificar si todos los campos están completos
+        function checkFormCompletion() {
+            const publishBtn = document.getElementById('publish-btn');
+            const title = document.getElementById('title').value.trim();
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const description = document.getElementById('description').value.trim();
+            const participants = document.getElementById('participants').value;
+            const contactMethod = document.querySelector('input[name="contactMethod"]:checked');
+            
+            let isComplete = true;
+            
+            // Verificar campos básicos
+            if (!title || title.length < 5) isComplete = false;
+            if (!date) isComplete = false;
+            if (!time) isComplete = false;
+            if (!description || description.length < 20) isComplete = false;
+            if (!participants || participants < 1 || participants > 50) isComplete = false;
+            if (!contactMethod) isComplete = false;
+            
+            // Verificar que la fecha no sea en el pasado
+            if (date) {
+                const selectedDate = new Date(date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (selectedDate < today) isComplete = false;
+            }
+            
+            // Verificar campos específicos de contacto
+            if (contactMethod) {
+                if (contactMethod.value === 'phone') {
+                    const phoneValue = document.getElementById('phone').value.trim();
+                    if (!phoneValue || !/^\+?[\d\s\-\(\)]+$/.test(phoneValue)) {
+                        isComplete = false;
+                    }
+                } else if (contactMethod.value === 'email') {
+                    const emailValue = document.getElementById('email').value.trim();
+                    if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+                        isComplete = false;
+                    }
+                }
+            }
+            
+            // Habilitar/deshabilitar botón
+            if (isComplete) {
+                publishBtn.disabled = false;
+                publishBtn.classList.remove('bg-gray-400', 'cursor-not-allowed', 'bg-btn-inactive');
+                publishBtn.classList.add('publish-btn');
+                console.log('Botón habilitado - formulario completo');
+            } else {
+                publishBtn.disabled = true;
+                publishBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                publishBtn.classList.remove('publish-btn', 'bg-btn-inactive');
+                console.log('Botón deshabilitado - faltan campos:', {
+                    title: title.length >= 5,
+                    date: !!date,
+                    time: !!time,
+                    description: description.length >= 20,
+                    participants: participants >= 1 && participants <= 50,
+                    contactMethod: !!contactMethod
+                });
+            }
+        }
+
+        // Manejar cambios en método de contacto
+        document.querySelectorAll('input[name="contactMethod"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const phoneField = document.getElementById('phoneField');
+                const emailField = document.getElementById('emailField');
+                const phoneInput = document.getElementById('phone');
+                const emailInput = document.getElementById('email');
+                
+                // Ocultar todos los campos
+                phoneField.classList.add('hidden');
+                emailField.classList.add('hidden');
+                phoneInput.required = false;
+                emailInput.required = false;
+                
+                // Mostrar el campo correspondiente
+                switch(this.value) {
+                    case 'phone':
+                        phoneField.classList.remove('hidden');
+                        phoneInput.required = true;
+                        break;
+                    case 'email':
+                        emailField.classList.remove('hidden');
+                        emailInput.required = true;
+                        break;
+                    case 'app':
+                        // No se necesita campo adicional para contacto por app
+                        break;
+                }
+                
+                // Verificar completitud del formulario
+                checkFormCompletion();
+            });
+        });
+
+        // Validación del formulario
+        function validateForm() {
+            let isValid = true;
+            const errors = {};
+
+            // Validar título
+            const title = document.getElementById('title').value.trim();
+            if (title.length < 5) {
+                errors.title = 'El título debe tener al menos 5 caracteres';
+                isValid = false;
+            }
+
+            // Validar fecha
+            const date = document.getElementById('date').value;
+            const selectedDate = new Date(date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (selectedDate < today) {
+                errors.date = 'La fecha no puede ser anterior a hoy';
+                isValid = false;
+            }
+
+            // Validar descripción
+            const description = document.getElementById('description').value.trim();
+            if (description.length < 20) {
+                errors.description = 'La descripción debe tener al menos 20 caracteres';
+                isValid = false;
+            }
+
+            // Validar participantes
+            const participants = parseInt(document.getElementById('participants').value);
+            if (participants < 1 || participants > 50) {
+                errors.participants = 'Debe haber entre 1 y 50 participantes';
+                isValid = false;
+            }
+
+            // Validar método de contacto
+            const contactMethod = document.querySelector('input[name="contactMethod"]:checked');
+            if (!contactMethod) {
+                errors.contact = 'Debes seleccionar un método de contacto';
+                isValid = false;
+            } else {
+                // Validar campos específicos según el método
+                if (contactMethod.value === 'phone') {
+                    const phoneValue = document.getElementById('phone').value.trim();
+                    if (!phoneValue) {
+                        errors.phone = 'Debes proporcionar tu número de teléfono';
+                        isValid = false;
+                    } else if (!/^\+?[\d\s\-\(\)]+$/.test(phoneValue)) {
+                        errors.phone = 'Introduce un número de teléfono válido';
+                        isValid = false;
+                    }
+                } else if (contactMethod.value === 'email') {
+                    const emailValue = document.getElementById('email').value.trim();
+                    if (!emailValue) {
+                        errors.email = 'Debes proporcionar tu correo electrónico';
+                        isValid = false;
+                    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+                        errors.email = 'Introduce un email válido';
+                        isValid = false;
+                    }
+                }
+            }
+
+            // Mostrar errores
+            Object.keys(errors).forEach(field => {
+                const errorElement = document.getElementById(`${field}-error`);
+                if (errorElement) {
+                    errorElement.textContent = errors[field];
+                    errorElement.classList.remove('hidden');
+                }
+            });
+
+            // Limpiar errores para campos válidos
+            ['title', 'date', 'description', 'participants', 'contact', 'phone', 'email'].forEach(field => {
+                if (!errors[field]) {
+                    const errorElement = document.getElementById(`${field}-error`);
+                    if (errorElement) {
+                        errorElement.classList.add('hidden');
+                    }
+                }
+            });
+
+            return isValid;
+        }
+
+        // Manejo del envío del formulario
+        document.getElementById('eventForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateForm()) {
+                // Simular envío exitoso
+                alert('¡Evento publicado exitosamente!');
+                window.location.href = 'withme.html';
+            }
+        });
+
+        // Guardar borrador
+        document.getElementById('save-draft').addEventListener('click', function() {
+            const formData = new FormData(document.getElementById('eventForm'));
+            const draft = {};
+            
+            for (let [key, value] of formData.entries()) {
+                draft[key] = value;
+            }
+            
+            localStorage.setItem('eventDraft', JSON.stringify(draft));
+            alert('Borrador guardado');
+        });
+
+        // Cargar borrador al cargar la página
+        window.addEventListener('load', function() {
+            const draft = localStorage.getItem('eventDraft');
+            if (draft) {
+                const draftData = JSON.parse(draft);
+                Object.keys(draftData).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element && key !== 'image') {
+                        element.value = draftData[key];
+                    }
+                });
+            }
+            
+            // Verificar completitud inicial
+            checkFormCompletion();
+        });
+
+        // Añadir event listeners para verificar completitud en tiempo real
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM cargado, añadiendo event listeners...');
+            
+            document.getElementById('title').addEventListener('input', function() {
+                console.log('Título cambiado:', this.value);
+                checkFormCompletion();
+            });
+            
+            document.getElementById('date').addEventListener('change', function() {
+                console.log('Fecha cambiada:', this.value);
+                checkFormCompletion();
+            });
+            
+            document.getElementById('time').addEventListener('change', function() {
+                console.log('Hora cambiada:', this.value);
+                checkFormCompletion();
+            });
+            
+            document.getElementById('description').addEventListener('input', function() {
+                console.log('Descripción cambiada, longitud:', this.value.length);
+                checkFormCompletion();
+            });
+            
+            document.getElementById('participants').addEventListener('input', function() {
+                console.log('Participantes cambiado:', this.value);
+                checkFormCompletion();
+            });
+            
+            document.getElementById('phone').addEventListener('input', function() {
+                console.log('Teléfono cambiado:', this.value);
+                checkFormCompletion();
+            });
+            
+            document.getElementById('email').addEventListener('input', function() {
+                console.log('Email cambiado:', this.value);
+                checkFormCompletion();
+            });
+            
+            // Verificación inicial
+            setTimeout(checkFormCompletion, 100);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evento - Compañero para Running</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#FBF8F3',
+                        'text-primary': '#000122',
+                        'text-secondary': '#6C6051',
+                        'btn-inactive': '#C6B7A4',
+                        'btn-active': '#635FE5'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-up': 'slideUp 0.2s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .ad-card {
+            transition: all 0.2s ease;
+        }
+        .ad-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 95, 229, 0.15);
+        }
+        .location-badge {
+            background: linear-gradient(135deg, #635FE5 0%, #7C77FF 100%);
+        }
+        .publish-btn {
+            background: linear-gradient(135deg, #635FE5 0%, #7C77FF 100%);
+            transition: all 0.2s ease;
+        }
+        .publish-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 95, 229, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-bg-primary min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Botón Atrás -->
+                <button class="w-10 h-10 bg-btn-inactive hover:bg-gray-200 rounded-full flex items-center justify-center text-white hover:text-text-primary transition-all duration-200" onclick="goBack()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                
+                <!-- Título Centrado -->
+                <div class="flex-1 text-center">
+                    <h1 class="text-2xl font-bold text-text-primary">Evento</h1>
+                </div>
+
+                <!-- Spacer para balance -->
+                <div class="w-10"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-6">
+        <!-- Imagen del Evento -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6 overflow-hidden">
+            <div class="relative">
+                <!-- Imagen Principal -->
+                <div class="w-full h-40 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                    <svg class="w-32 h-32 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                    </svg>
+                </div>
+                
+                
+            </div>
+        </div>
+
+        <!-- Información del Evento -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <!-- Encabezado con título -->
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-text-primary mb-6">Compañero para Running</h1>
+                    <div class="flex items-center space-x-4 text-sm text-text-secondary">
+                        <span class="flex items-center space-x-1 text-lg text-text-secondary">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    <span>05/10/2025 - 21:00</span>
+                                </span>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-text-primary mb-3">Descripción del evento</h3>
+                <p class="text-text-secondary leading-relaxed">
+                    ¡Únete a nuestro grupo de running matutino! Salimos todos los días a las 7:00 AM desde la entrada principal del Parque del Retiro. 
+                    Somos un grupo de corredores de nivel intermedio con un ritmo promedio de 5:30 min/km. 
+                    <br><br>
+                    El recorrido típico es de 5-8 km dependiendo del día y las condiciones climáticas. 
+                    Es una excelente oportunidad para mantenerse en forma, conocer gente nueva y empezar el día con energía.
+                    <br><br>
+                    Requerimos un nivel mínimo de condición física para mantener el ritmo del grupo. 
+                    ¡Ven con ropa deportiva cómoda y muchas ganas de correr!
+                </p>
+            </div>
+
+            
+
+            <!-- Participantes actuales -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-text-primary mb-3">Participantes confirmados (3/5)</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg p-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold text-sm">CA</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-text-primary">Carlos A.</p>
+                            <p class="text-xs text-text-secondary">Organizador</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg p-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold text-sm">MR</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-text-primary">María R.</p>
+                            <p class="text-xs text-text-secondary">Participante</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg p-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold text-sm">JL</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-text-primary">Juan L.</p>
+                            <p class="text-xs text-text-secondary">Participante</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información del Organizador -->
+            <div class="border-t border-gray-100 pt-6">
+                <h3 class="text-lg font-semibold text-text-primary mb-4">Organizado por</h3>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold">CA</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-text-primary">Carlos A.</h4>
+                           
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        
+                        <button class="w-10 h-10 bg-btn-active hover:bg-purple-600 rounded-full flex items-center justify-center text-white transition-all duration-200" title="Contactar organizador">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="flex gap-4 mb-6">
+            <button class="flex-1 bg-btn-active hover:bg-purple-600 text-white px-6 py-4 rounded-xl font-semibold flex items-center justify-center space-x-2 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                <span>Unirse</span>
+            </button>
+            <button class="px-6 py-4 bg-white border-2 border-gray-200 text-text-primary rounded-xl font-semibold hover:bg-gray-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+            </button>
+           
+        </div>
+    </main>
+
+    <script>
+        // Función para ir atrás
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'withme.html';
+            }
+        }
+    </script>
+</body>
+</html>
