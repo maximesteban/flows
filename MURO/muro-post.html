@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muro de Anuncios - SocialApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#FBF8F3',
+                        'text-primary': '#000122',
+                        'text-secondary': '#6C6051',
+                        'btn-inactive': '#C6B7A4',
+                        'btn-active': '#635FE5'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-up': 'slideUp 0.2s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .ad-card {
+            transition: all 0.2s ease;
+        }
+        .ad-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 95, 229, 0.15);
+        }
+        .location-badge {
+            background: linear-gradient(135deg, #635FE5 0%, #7C77FF 100%);
+        }
+        .publish-btn {
+            background: linear-gradient(135deg, #635FE5 0%, #7C77FF 100%);
+            transition: all 0.2s ease;
+        }
+        .publish-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 95, 229, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-bg-primary min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Botón Atrás -->
+                <button class="w-10 h-10 bg-btn-inactive hover:bg-gray-200 rounded-full flex items-center justify-center text-white hover:text-text-primary transition-all duration-200" onclick="goBack()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                
+                <!-- Título Centrado -->
+                <div class="flex-1 text-center">
+                    <h1 class="text-2xl font-bold text-text-primary">Detalle del Anuncio</h1>
+                </div>
+
+                <!-- Spacer para balance -->
+                <div class="w-10"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-6">
+        <!-- Galería de Imágenes -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6 overflow-hidden">
+            <div class="relative">
+                <!-- Imagen Principal -->
+                <div class="w-full h-80 bg-gray-200 flex items-center justify-center">
+                    <svg class="w-24 h-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <!-- Navegación de imágenes -->
+                <div class="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                    1 / 4
+                </div>
+            </div>
+            <!-- Miniaturas -->
+            <div class="flex gap-2 p-4 bg-gray-50">
+                <div class="w-16 h-16 bg-gray-300 rounded-lg border-2 border-btn-active"></div>
+                <div class="w-16 h-16 bg-gray-300 rounded-lg"></div>
+                <div class="w-16 h-16 bg-gray-300 rounded-lg"></div>
+                <div class="w-16 h-16 bg-gray-300 rounded-lg"></div>
+            </div>
+        </div>
+
+        <!-- Información del Anuncio -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <!-- Encabezado con precio -->
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-text-primary mb-2">iPhone 13 Pro Max - Como nuevo</h1>
+                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">Venta</span>
+                </div>
+                <div class="text-right">
+                    <p class="text-3xl font-bold text-btn-active">850€</p>
+                    <p class="text-sm text-text-secondary">Precio negociable</p>
+                </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-text-primary mb-3">Descripción</h3>
+                <p class="text-text-secondary leading-relaxed">
+                    Vendo iPhone 13 Pro Max de 256GB en perfecto estado. El teléfono ha sido cuidado desde el primer día y siempre ha llevado protector de pantalla y funda. 
+                    Incluye la caja original con todos los accesorios, cargador Lightning original de Apple, cable USB-C a Lightning, y una funda de regalo de alta calidad. 
+                    Sin arañazos, golpes o defectos. Batería en excelente estado con más del 95% de capacidad. Libre de operador.
+                </p>
+            </div>
+
+            <!-- Detalles Técnicos -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-text-primary mb-3">Especificaciones</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <span class="font-medium text-text-primary">Modelo:</span>
+                        <span class="text-text-secondary ml-2">iPhone 13 Pro Max</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <span class="font-medium text-text-primary">Capacidad:</span>
+                        <span class="text-text-secondary ml-2">256GB</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <span class="font-medium text-text-primary">Color:</span>
+                        <span class="text-text-secondary ml-2">Azul Alpino</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <span class="font-medium text-text-primary">Estado:</span>
+                        <span class="text-text-secondary ml-2">Como nuevo</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <span class="font-medium text-text-primary">Batería:</span>
+                        <span class="text-text-secondary ml-2">95% capacidad</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <span class="font-medium text-text-primary">Garantía:</span>
+                        <span class="text-text-secondary ml-2">Hasta marzo 2024</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información del Publicador -->
+            <div class="border-t border-gray-100 pt-6">
+                <h3 class="text-lg font-semibold text-text-primary mb-4">Publicado por</h3>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold text-lg">CA</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-text-primary">Carlos A.</h4>
+                            <p class="text-sm text-text-secondary">Miembro desde hace 2 años</p>
+                            <div class="flex items-center space-x-1 mt-1">
+                                <div class="flex text-yellow-400">
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-text-secondary">4.9 (127 reseñas)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right text-sm text-text-secondary">
+                        <p>📍 Malasaña, Madrid</p>
+                        <p>🕒 Publicado hace 2 horas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="flex gap-4 mb-6">
+            <button class="flex-1 bg-btn-active hover:bg-purple-600 text-white px-6 py-4 rounded-xl font-semibold flex items-center justify-center space-x-2 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                <span>Contactar</span>
+            </button>
+            <button class="px-6 py-4 bg-white border-2 border-gray-200 text-text-primary rounded-xl font-semibold hover:bg-gray-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+            </button>
+            <button class="px-6 py-4 bg-white border-2 border-gray-200 text-text-primary rounded-xl font-semibold hover:bg-gray-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Anuncios Similares -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-xl font-bold text-text-primary mb-4">Anuncios similares</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Anuncio similar 1 -->
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all">
+                    <div class="flex gap-3">
+                        <div class="w-16 h-16 bg-gray-200 rounded-lg flex-shrink-0"></div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-text-primary text-sm">iPhone 13 - 128GB</h4>
+                            <p class="text-text-secondary text-xs mb-1">Estado: Muy bueno</p>
+                            <p class="font-bold text-btn-active">720€</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Anuncio similar 2 -->
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all">
+                    <div class="flex gap-3">
+                        <div class="w-16 h-16 bg-gray-200 rounded-lg flex-shrink-0"></div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-text-primary text-sm">iPhone 14 - 256GB</h4>
+                            <p class="text-text-secondary text-xs mb-1">Estado: Como nuevo</p>
+                            <p class="font-bold text-btn-active">950€</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Función para ir atrás
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'muro.html';
+            }
+        }
+
+        // Simulación de galería de imágenes
+        let currentImage = 1;
+        const totalImages = 4;
+
+        function nextImage() {
+            currentImage = currentImage < totalImages ? currentImage + 1 : 1;
+            updateImageCounter();
+        }
+
+        function previousImage() {
+            currentImage = currentImage > 1 ? currentImage - 1 : totalImages;
+            updateImageCounter();
+        }
+
+        function updateImageCounter() {
+            document.querySelector('.absolute.bottom-4.right-4').textContent = `${currentImage} / ${totalImages}`;
+        }
+
+        // Agregar eventos de click a las miniaturas
+        document.querySelectorAll('.w-16.h-16').forEach((thumbnail, index) => {
+            thumbnail.addEventListener('click', () => {
+                currentImage = index + 1;
+                updateImageCounter();
+                // Actualizar borde activo
+                document.querySelectorAll('.w-16.h-16').forEach(thumb => {
+                    thumb.classList.remove('border-btn-active');
+                    thumb.classList.add('border-transparent');
+                });
+                thumbnail.classList.add('border-btn-active');
+                thumbnail.classList.remove('border-transparent');
+            });
+        });
+    </script>
+</body>
+</html>
