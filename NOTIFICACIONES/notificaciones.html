@@ -26,7 +26,7 @@
             right: 15px;
             width: 360px;
             max-width: calc(100vw - 30px);
-            background: white;
+            background: #FBF8F3;
             border-radius: 0.75rem;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             z-index: 1000;
@@ -118,7 +118,7 @@
         }
 
         .notification-category {
-            background: #F9FAFB;
+            background: #F7F4EF;
             padding: 0.75rem 1.5rem;
             border-bottom: 1px solid #E5E7EB;
             font-weight: 600;
@@ -170,7 +170,7 @@
         }
 
         .notification-item {
-            border-bottom: 1px solid #F3F4F6;
+            border-bottom: 1px solid #F0EDE6;
             padding: 0.75rem 1.5rem;
             cursor: pointer;
             transition: background-color 0.2s ease;
@@ -183,7 +183,7 @@
         }
 
         .notification-item:hover {
-            background-color: #F9FAFB;
+            background-color: #F9F7F4;
         }
 
         .notification-item:last-child {
@@ -276,7 +276,7 @@
         }
 
         .close-btn:hover {
-            background: #F3F4F6;
+            background: #F7F4EF;
             color: #374151;
         }
 
@@ -294,29 +294,29 @@
         }
 
         .clear-all-btn:hover {
-            background: #FEF2F2;
+            background: #F9F6F2;
             color: #DC2626;
             transform: scale(1.05);
         }
 
         .group-notification {
-            background: white;
+            background: #FBF8F3;
         }
 
         .group-notification:hover {
-            background: #F9FAFB;
+            background: #F9F7F4;
         }
 
         .individual-notification {
-            background: #F8FAFC;
+            background: #F7F4EF;
         }
 
         .individual-notification:hover {
-            background: #F1F5F9;
+            background: #F5F2EC;
         }
     </style>
 </head>
-<body class="bg-white">
+<body class="bg-primary">
     
 
     <!-- Notification Bell Button (Fixed Position) -->
@@ -349,7 +349,7 @@
                 <!-- Group Chat Section -->
                 <div class="notification-section">
                     <div class="notification-category">
-                        <span>Chat de Dominio</span>
+                        <span>Chats de Dominio</span>
                         <div class="category-indicators">
                             <span class="notification-count">2</span>
                             <svg class="scroll-indicator w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -433,7 +433,7 @@
             </div>
 
             <!-- Push Notification Controls -->
-            <div class="px-6 py-4 border-t bg-gray-50">
+            <div class="px-6 py-4 border-t bg-primary">
                 <div id="pushNotificationSection">
                     <!-- When notifications are not enabled -->
                     <div id="enableNotifications">
