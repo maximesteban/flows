@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Chats</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'Global-Neutral-30': '#F5F5F5',
+                        'bg-primary': '#FBF8F3',
+                        'Global-Neutral-10': '#FAFAFA',
+                        'Specific-Text-main': '#333333'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .notification-dropdown {
+            display: none;
+            position: fixed;
+            top: 65px;
+            right: 15px;
+            width: 360px;
+            max-width: calc(100vw - 30px);
+            background: #FBF8F3;
+            border-radius: 0.75rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 1000;
+            height: auto;
+            min-height: 200px;
+            max-height: 650px;
+            overflow: hidden;
+            border: 1px solid #E5E7EB;
+        }
+
+/* Estilo congreso mundial Smart City World */
+.notification-dropdown {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(120deg, #f1f5f9 0%, #e0e7ff 60%, #c7d2fe 100%);
+    border-radius: 0;
+    box-shadow: none;
+    z-index: 1001;
+    overflow: hidden;
+    border: none;
+}
+.notification-dropdown.show {
+    display: block;
+    animation: fadeIn 0.2s ease-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.notification-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.notification-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #a5b4fc;
+    background: linear-gradient(90deg, #6366f1 0%, #06b6d4 100%);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+.notification-list {
+    max-height: 600px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+.notification-section {
+    display: flex;
+    flex-direction: column;
+}
+.notification-section:not(:last-child) {
+    border-bottom: 1px solid #e0e7ff;
+}
+.notification-section-content {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+.group-section-content {
+    max-height: 160px;
+}
+.individual-section-content {
+    max-height: 360px;
+}
+.notification-category {
+    background: linear-gradient(90deg, #6366f1 0%, #06b6d4 100%);
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid #a5b4fc;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.category-indicators {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.notification-count {
+    background: #06b6d4;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.scroll-indicator {
+    color: #6366f1;
+    opacity: 0.7;
+    animation: bounce 2s infinite;
+}
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-3px); }
+    60% { transform: translateY(-2px); }
+}
+.notification-item {
+    border-bottom: 1px solid #e0e7ff;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    background: #f1f5f9;
+}
+.notification-item:hover {
+    background: linear-gradient(90deg, #c7d2fe 0%, #e0e7ff 100%);
+}
+.notification-item:last-child {
+    border-bottom: none;
+}
+.group-notification {
+    background: #e0e7ff;
+}
+.group-notification:hover {
+    background: linear-gradient(90deg, #6366f1 0%, #06b6d4 100%);
+    color: #fff;
+}
+.individual-notification {
+    background: #f1f5f9;
+}
+.individual-notification:hover {
+    background: linear-gradient(90deg, #6366f1 0%, #06b6d4 100%);
+    color: #fff;
+}
+/* Manual scrolling users */
+.manual-scroll {
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+.manual-scroll::-webkit-scrollbar {
+    display: none; /* WebKit */
+}
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #5A56E0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6B7280;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: #F7F4EF;
+            color: #374151;
+        }
+
+        .clear-all-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #EF4444;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .clear-all-btn:hover {
+            background: #F7F4EF;
+            color: #DC2626;
+            transform: scale(1.05);
+        }
+
+        .group-notification {
+            background: #FBF8F3;
+        }
+
+        .group-notification:hover {
+            background: #F7F4EF;
+        }
+
+        .individual-notification {
+            background: #FBF8F3;
+        }
+
+        .individual-notification:hover {
+            background: #F7F4EF;
+        }
+
+        /* Manual scrolling users */
+        .manual-scroll {
+            scroll-behavior: smooth;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+
+        .manual-scroll::-webkit-scrollbar {
+            display: none; /* WebKit */
+        }
+    </style>
+</head>
+<body class="bg-bg-primary">
+    
+
+    <!-- Chat List Button (Fixed Position) -->
+    <button class="bell-button" onclick="toggleChatDropdown()">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+        <!-- Chat Count Badge -->
+        <span class="notification-badge" id="chatBadge">3</span>
+    </button>
+
+    <!-- Chat List Dropdown -->
+    <div id="chatDropdown" class="notification-dropdown">
+        <div class="notification-content">
+            <!-- Header -->
+            <div class="notification-header">
+                <h3 class="text-lg font-semibold text-gray-800">Chats</h3>
+                <div class="flex items-center space-x-2">
+                    
+                    <button class="close-btn" onclick="closeChatDropdown()">&times;</button>
+                </div>
+            </div>
+
+            <!-- Online Users Section -->
+            <div class="px-6 py-4 border-b" style="background-color: #F7F4EF;" id="onlineUsersSection">
+                <div class="mb-3">
+                    <h4 class="text-sm font-semibold text-gray-700">Usuarios Conectados (24)</h4>
+                </div>
+                
+                <!-- Online Users Manual Scroll Container -->
+                <div class="relative">
+                    <!-- Left Arrow -->
+                    <button class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-1 shadow-md transition-all duration-200" onclick="scrollUsers('left')" id="leftArrow">
+                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    
+                    <!-- Right Arrow -->
+                    <button class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-1 shadow-md transition-all duration-200" onclick="scrollUsers('right')" id="rightArrow">
+                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                    
+                    <div class="flex items-center space-x-3 overflow-x-auto manual-scroll pb-2 px-6" id="onlineUsersSlider">
+                        <!-- All users in a continuous scroll -->
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('ana')" title="Ana - Arte">
+                            <div class="w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">A</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('diego')" title="Diego - Música">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">D</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('lucia')" title="Lucía - Viajes">
+                            <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-teal-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">L</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('pedro')" title="Pedro - Fotografía">
+                            <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">P</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('sofia')" title="Sofía - Arte">
+                            <div class="w-10 h-10 bg-gradient-to-br from-red-400 to-pink-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">S</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('marco')" title="Marco - Tecnología">
+                            <div class="w-10 h-10 bg-gradient-to-br from-indigo-400 to-cyan-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">M</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('elena')" title="Elena - Diseño">
+                            <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">E</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('alex')" title="Alex - Deportes">
+                            <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">A</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('carla')" title="Carla - Literatura">
+                            <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">C</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('juan')" title="Juan - Cocina">
+                            <div class="w-10 h-10 bg-gradient-to-br from-rose-400 to-pink-500 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">J</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <!-- Additional users for more variety -->
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('laura')" title="Laura - Baile">
+                            <div class="w-10 h-10 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">L</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('ricardo')" title="Ricardo - Gaming">
+                            <div class="w-10 h-10 bg-gradient-to-br from-slate-400 to-gray-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">R</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('nina')" title="Nina - Yoga">
+                            <div class="w-10 h-10 bg-gradient-to-br from-lime-400 to-green-500 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">N</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('oscar')" title="Oscar - Cine">
+                            <div class="w-10 h-10 bg-gradient-to-br from-fuchsia-400 to-pink-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">O</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                        
+                        <div class="flex-shrink-0 relative cursor-pointer" onclick="openUserProfile('valeria')" title="Valeria - Moda">
+                            <div class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">V</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border border-white rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat List -->
+            <div class="notification-list">
+                <!-- Group Chats by Interests -->
+                <div class="notification-section">
+                    <div class="notification-category">
+                        <span>Chats de dominio</span>
+                        <div class="category-indicators">
+                            <span class="notification-count">4</span>
+                            <svg class="scroll-indicator w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="notification-section-content group-section-content">
+                        <!-- Art Interest Group -->
+                        <div class="notification-item group-notification" onclick="handleChatClick('art-group')">
+                            <div class="flex items-center">
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-center">
+                                        <p class="font-semibold text-gray-800">Arte & Diseño</p>
+                                        <p class="text-xs text-gray-400">12 online</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Music Interest Group -->
+                        <div class="notification-item group-notification" onclick="handleChatClick('music-group')">
+                            <div class="flex items-center">
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-center">
+                                        <p class="font-semibold text-gray-800">Música</p>
+                                        <p class="text-xs text-gray-400">8 online</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Travel Interest Group -->
+                        <div class="notification-item group-notification" onclick="handleChatClick('travel-group')">
+                            <div class="flex items-center">
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-center">
+                                        <p class="font-semibold text-gray-800">Viajes</p>
+                                        <p class="text-xs text-gray-400">15 online</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Photography Interest Group -->
+                        <div class="notification-item group-notification" onclick="handleChatClick('photography-group')">
+                            <div class="flex items-center">
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-center">
+                                        <p class="font-semibold text-gray-800">Fotografía</p>
+                                        <p class="text-xs text-gray-400">6 online</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Individual Chats Section -->
+                <div class="notification-section">
+                    <div class="notification-category">
+                        <span>Chats privados</span>
+                        <div class="category-indicators">
+                            <span class="notification-count">6</span>
+                            <svg class="scroll-indicator w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="notification-section-content individual-section-content">
+                        <!-- Individual Chat 1 -->
+                        <div class="notification-item individual-notification" onclick="handleChatClick('chat-maria')">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-600 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold text-sm">M</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <p class="font-semibold text-gray-800">María González</p>
+                                        <p class="text-xs text-gray-400">Hace 5 min</p>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Tú: "¿Te apuntas al evento de arte?"</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Chat 2 -->
+                        <div class="notification-item individual-notification" onclick="handleChatClick('chat-carlos')">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold text-sm">C</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <p class="font-semibold text-gray-800">Carlos Rodríguez</p>
+                                        <p class="text-xs text-gray-400">Hace 15 min</p>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Tú: "Perfecto, nos vemos mañana"</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Chat 3 -->
+                        <div class="notification-item individual-notification" onclick="handleChatClick('chat-ana')">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold text-sm">A</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <p class="font-semibold text-gray-800">Ana Martínez</p>
+                                        <p class="text-xs text-gray-400">Hace 8 min</p>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Tú: "Gracias por compartir ese documento"</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Chat 4 -->
+                        <div class="notification-item individual-notification" onclick="handleChatClick('chat-diego')">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-600 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold text-sm">D</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <p class="font-semibold text-gray-800">Diego Silva</p>
+                                        <p class="text-xs text-gray-400">Hace 12 min</p>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Tú: "¿Has escuchado el nuevo álbum?"</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Chat 5 -->
+                        <div class="notification-item individual-notification" onclick="handleChatClick('chat-lucia')">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-gradient-to-br from-violet-400 to-purple-600 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold text-sm">L</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <p class="font-semibold text-gray-800">Lucía Torres</p>
+                                        <p class="text-xs text-gray-400">Hace 20 min</p>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Tú: "Ese destino se ve increíble!"</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Chat 6 -->
+                        <div class="notification-item individual-notification" onclick="handleChatClick('chat-pedro')">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold text-sm">P</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <p class="font-semibold text-gray-800">Pedro Ramírez</p>
+                                        <p class="text-xs text-gray-400">Hace 25 min</p>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Tú: "Excelente técnica de iluminación"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State Dropdown (when no chats) -->
+    <div id="emptyChatDropdown" class="notification-dropdown" style="height: 300px;">
+        <div class="notification-content">
+            <div class="notification-header">
+                <h3 class="text-lg font-semibold text-gray-800">Chats Abiertos</h3>
+                <div class="flex items-center space-x-2">
+                    <button class="close-btn" onclick="closeChatDropdown()">&times;</button>
+                </div>
+            </div>
+            
+            <div class="p-6 text-center flex-grow flex flex-col justify-center">
+                <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                <p class="text-gray-500 mb-2">No tienes chats abiertos</p>
+                <p class="text-xs text-gray-400">Inicia una conversación desde los chats por intereses</p>
+            </div>
+
+            <div class="px-6 py-4 border-t flex-shrink-0" style="background-color: #F7F4EF;">
+                <button class="btn-primary w-full" onclick="showOnlineUsers()">
+                    Ver Usuarios Conectados
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let dropdownOpen = false;
+
+        // Dropdown functions
+        function toggleChatDropdown() {
+            if (dropdownOpen) {
+                closeChatDropdown();
+            } else {
+                openChatDropdown();
+            }
+        }
+
+        function openChatDropdown() {
+            // Check if there are chats
+            const hasChats = true; // Change this to false to show empty state
+            
+            if (hasChats) {
+                document.getElementById('chatDropdown').classList.add('show');
+                document.getElementById('emptyChatDropdown').classList.remove('show');
+            } else {
+                document.getElementById('emptyChatDropdown').classList.add('show');
+                document.getElementById('chatDropdown').classList.remove('show');
+            }
+            dropdownOpen = true;
+        }
+
+        function closeChatDropdown() {
+            document.getElementById('chatDropdown').classList.remove('show');
+            document.getElementById('emptyChatDropdown').classList.remove('show');
+            dropdownOpen = false;
+        }
+
+        // Handle chat click
+        function handleChatClick(chatId) {
+            console.log('Opening chat:', chatId);
+            // Here you would navigate to the specific chat
+            closeChatDropdown();
+            
+            // Example: redirect to chat page
+            if (chatId.includes('group')) {
+                // Navigate to group chat
+                window.location.href = `../CHAT/group-chat.html?id=${chatId}`;
+            } else {
+                // Navigate to individual chat
+                window.location.href = `../CHAT/chat.html?user=${chatId}`;
+            }
+        }
+
+        // Show online users (could open a modal or navigate to users page)
+        function showOnlineUsers() {
+            console.log('Showing online users');
+            // Here you could open a modal with all online users
+            // or navigate to a dedicated users page
+            closeChatDropdown();
+            // Example: window.location.href = '../USERS/online-users.html';
+        }
+
+
+
+        // Open user profile
+        function openUserProfile(userId) {
+            console.log('Opening profile for user:', userId);
+            // Navigate to user profile or open modal
+            window.location.href = `../AVATAR/preview-chat.html?user=${userId}`;
+        }
+
+        // Scroll users container
+        function scrollUsers(direction) {
+            const container = document.getElementById('onlineUsersSlider');
+            const scrollAmount = 120; // Approximate width of 3 users
+            
+            if (direction === 'left') {
+                container.scrollBy({
+                    left: -scrollAmount,
+                    behavior: 'smooth'
+                });
+            } else if (direction === 'right') {
+                container.scrollBy({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+            
+            // Update arrow visibility after scrolling
+            setTimeout(() => {
+                updateArrowVisibility();
+            }, 300);
+        }
+
+        // Update arrow visibility based on scroll position
+        function updateArrowVisibility() {
+            const container = document.getElementById('onlineUsersSlider');
+            const leftArrow = document.getElementById('leftArrow');
+            const rightArrow = document.getElementById('rightArrow');
+            
+            if (!container || !leftArrow || !rightArrow) return;
+            
+            const isAtStart = container.scrollLeft <= 0;
+            const isAtEnd = container.scrollLeft >= (container.scrollWidth - container.clientWidth);
+            
+            // Show/hide arrows based on scroll position
+            leftArrow.style.opacity = isAtStart ? '0.3' : '1';
+            rightArrow.style.opacity = isAtEnd ? '0.3' : '1';
+            
+            leftArrow.style.pointerEvents = isAtStart ? 'none' : 'auto';
+            rightArrow.style.pointerEvents = isAtEnd ? 'none' : 'auto';
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('chatDropdown');
+            const emptyDropdown = document.getElementById('emptyChatDropdown');
+            const chatButton = document.querySelector('.bell-button');
+            
+            if (dropdownOpen && 
+                !dropdown.contains(event.target) && 
+                !emptyDropdown.contains(event.target) && 
+                !chatButton.contains(event.target)) {
+                closeChatDropdown();
+            }
+        });
+
+        // Update chat badge count
+        function updateChatCount(count) {
+            const badge = document.getElementById('chatBadge');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial chat count (group chats + individual chats)
+            updateChatCount(10); // 4 group chats + 6 individual chats
+            
+            // Initialize arrow visibility
+            setTimeout(() => {
+                updateArrowVisibility();
+                
+                // Add scroll event listener to update arrows on manual scroll
+                const container = document.getElementById('onlineUsersSlider');
+                if (container) {
+                    container.addEventListener('scroll', updateArrowVisibility);
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
