@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - MiceNet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .star {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .star:hover {
+            transform: scale(1.2);
+        }
+        .star.filled {
+            fill: #fbbf24;
+            stroke: #f59e0b;
+        }
+        .star.empty {
+            fill: none;
+            stroke: #d1d5db;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 pb-20">
+    <!-- Header -->
+    <header class="gradient-bg text-white px-4 py-4 sticky top-0 z-40">
+        <div class="flex items-center">
+            <a href="user-home.html" class="mr-4">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </a>
+            <h1 class="text-2xl font-bold">Feedback</h1>
+        </div>
+    </header>
+
+    <!-- Pending Feedback Section -->
+    <div class="p-4">
+        <div class="bg-purple-50 border-2 border-purple-300 rounded-xl p-4 mb-4">
+            <div class="flex items-start space-x-3">
+                <svg class="w-6 h-6 text-purple-600 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div>
+                    <h3 class="font-semibold text-purple-900">¡Tu opinión mejora las conexiones!</h3>
+                    <p class="text-sm text-purple-700 mt-1">Tienes 2 conexiones pendientes de valorar. Tu feedback ayuda a la IA a mejorar las recomendaciones.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-lg font-bold text-gray-800 mb-4">Conexiones Pendientes de Valorar</h2>
+
+        <!-- Pending Feedback Card 1 -->
+        <div class="bg-white rounded-xl shadow-md p-4 mb-4 border-2 border-purple-200">
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                    M
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-800">María García</h3>
+                    <p class="text-sm text-gray-500">Product Manager • TechCorp</p>
+                    <p class="text-xs text-gray-400 mt-1">Conversaste hace 2 horas</p>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-lg p-3 mb-4">
+                <p class="text-sm text-gray-700">
+                    <span class="font-semibold">Match IA:</span> 90% •
+                    <span class="font-semibold">Motivo:</span> Busca developers para su startup
+                </p>
+            </div>
+
+            <button onclick="openFeedbackModal('user-2', 'María García', 'Product Manager', 'from-pink-500 to-purple-500')" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                Valorar Conexión
+            </button>
+        </div>
+
+        <!-- Pending Feedback Card 2 -->
+        <div class="bg-white rounded-xl shadow-md p-4 mb-4 border-2 border-purple-200">
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                    A
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-800">Ana Rodríguez</h3>
+                    <p class="text-sm text-gray-500">Founder • GreenTech</p>
+                    <p class="text-xs text-gray-400 mt-1">Conversaste ayer</p>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-lg p-3 mb-4">
+                <p class="text-sm text-gray-700">
+                    <span class="font-semibold">Match IA:</span> 84% •
+                    <span class="font-semibold">Motivo:</span> Construyendo equipo tech
+                </p>
+            </div>
+
+            <button onclick="openFeedbackModal('user-4', 'Ana Rodríguez', 'Founder', 'from-green-500 to-teal-500')" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                Valorar Conexión
+            </button>
+        </div>
+    </div>
+
+    <!-- Previous Feedback Section -->
+    <div class="px-4 pb-4">
+        <h2 class="text-lg font-bold text-gray-800 mb-4">Feedback Enviado</h2>
+
+        <div class="space-y-3">
+            <!-- Previous Feedback 1 -->
+            <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-200">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">
+                            J
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800 text-sm">Jorge Martínez</h4>
+                            <p class="text-xs text-gray-500">Hace 3 días</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4 star filled" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg class="w-4 h-4 star filled" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg class="w-4 h-4 star filled" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg class="w-4 h-4 star filled" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg class="w-4 h-4 star empty" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600">"Gran conversación sobre cloud architecture. Muy útil."</p>
+            </div>
+
+            <!-- Previous Feedback 2 -->
+            <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-200">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+                            L
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800 text-sm">Laura Fernández</h4>
+                            <p class="text-xs text-gray-500">Hace 1 semana</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4 star filled" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg class="w-4 h-4 star filled" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg class="w-4 h-4 star filled" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg class="w-4 h-4 star filled" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg class="w-4 h-4 star filled" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600">"Excelente match. Colaboración design-dev perfecta."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Problem Section -->
+    <div class="px-4 pb-6">
+        <h2 class="text-lg font-bold text-gray-800 mb-4">Reportar Problema</h2>
+        <button onclick="openReportModal()" class="w-full bg-red-50 border-2 border-red-300 text-red-700 py-3 rounded-lg font-semibold hover:bg-red-100 transition-colors flex items-center justify-center space-x-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <span>Reportar Problema Técnico o de Seguridad</span>
+        </button>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedback-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end justify-center">
+        <div class="bg-white rounded-t-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="text-xl font-bold text-gray-800">Valorar Conexión</h3>
+                <button onclick="closeFeedbackModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="p-6">
+                <!-- User Info -->
+                <div class="flex items-center space-x-3 mb-6">
+                    <div id="modal-avatar" class="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-2xl">
+                    </div>
+                    <div>
+                        <h4 id="modal-name" class="font-semibold text-gray-800 text-lg"></h4>
+                        <p id="modal-role" class="text-sm text-gray-500"></p>
+                    </div>
+                </div>
+
+                <!-- Star Rating -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">¿Qué tan útil fue esta conexión?</label>
+                    <div class="flex items-center justify-center space-x-2 bg-gray-50 rounded-xl p-4">
+                        <svg onclick="setRating(1)" class="w-12 h-12 star empty" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg onclick="setRating(2)" class="w-12 h-12 star empty" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg onclick="setRating(3)" class="w-12 h-12 star empty" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg onclick="setRating(4)" class="w-12 h-12 star empty" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg onclick="setRating(5)" class="w-12 h-12 star empty" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <p id="rating-text" class="text-center text-sm text-gray-500 mt-2">Selecciona una valoración</p>
+                </div>
+
+                <!-- Match Quality -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">¿Qué tan preciso fue el match de la IA?</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button onclick="setMatchQuality('low')" class="match-quality-btn p-3 bg-gray-100 rounded-lg text-center border-2 border-transparent hover:border-purple-500 transition-all">
+                            <div class="text-2xl mb-1">😕</div>
+                            <div class="text-xs font-semibold text-gray-700">Poco preciso</div>
+                        </button>
+                        <button onclick="setMatchQuality('medium')" class="match-quality-btn p-3 bg-gray-100 rounded-lg text-center border-2 border-transparent hover:border-purple-500 transition-all">
+                            <div class="text-2xl mb-1">😊</div>
+                            <div class="text-xs font-semibold text-gray-700">Bueno</div>
+                        </button>
+                        <button onclick="setMatchQuality('high')" class="match-quality-btn p-3 bg-gray-100 rounded-lg text-center border-2 border-transparent hover:border-purple-500 transition-all">
+                            <div class="text-2xl mb-1">🤩</div>
+                            <div class="text-xs font-semibold text-gray-700">Excelente</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Comments -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Comentarios (opcional)</label>
+                    <textarea id="feedback-comment" rows="4" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Cuéntanos más sobre tu experiencia..."></textarea>
+                </div>
+
+                <!-- Anonymous Option -->
+                <div class="mb-6">
+                    <label class="flex items-center space-x-3 cursor-pointer">
+                        <input type="checkbox" id="anonymous-feedback" class="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <span class="text-sm text-gray-700">Enviar feedback anónimo (la persona no verá tu valoración)</span>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button onclick="submitFeedback()" class="w-full bg-purple-600 text-white py-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed" id="submit-feedback-btn">
+                    Enviar Feedback
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div id="report-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end justify-center">
+        <div class="bg-white rounded-t-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="text-xl font-bold text-gray-800">Reportar Problema</h3>
+                <button onclick="closeReportModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="p-6">
+                <!-- Problem Type -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">Tipo de problema</label>
+                    <select id="problem-type" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <option value="">Selecciona un tipo</option>
+                        <option value="harassment">Acoso o conducta inapropiada</option>
+                        <option value="spam">Spam o contenido no deseado</option>
+                        <option value="fake">Perfil falso o suplantación</option>
+                        <option value="technical">Problema técnico de la app</option>
+                        <option value="match">Match incorrecto de IA</option>
+                        <option value="privacy">Problema de privacidad</option>
+                        <option value="other">Otro</option>
+                    </select>
+                </div>
+
+                <!-- Related User (optional) -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Usuario relacionado (opcional)</label>
+                    <input type="text" id="related-user" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Nombre del usuario">
+                </div>
+
+                <!-- Description -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Descripción del problema</label>
+                    <textarea id="report-description" rows="5" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Describe lo que ocurrió..." required></textarea>
+                </div>
+
+                <!-- Urgency -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">Urgencia</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button onclick="setUrgency('low')" class="urgency-btn p-3 bg-gray-100 rounded-lg text-center border-2 border-transparent hover:border-red-500 transition-all">
+                            <div class="text-sm font-semibold text-gray-700">Baja</div>
+                        </button>
+                        <button onclick="setUrgency('medium')" class="urgency-btn p-3 bg-gray-100 rounded-lg text-center border-2 border-transparent hover:border-red-500 transition-all">
+                            <div class="text-sm font-semibold text-gray-700">Media</div>
+                        </button>
+                        <button onclick="setUrgency('high')" class="urgency-btn p-3 bg-red-100 rounded-lg text-center border-2 border-transparent hover:border-red-500 transition-all">
+                            <div class="text-sm font-semibold text-red-700">Alta</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button onclick="submitReport()" class="w-full bg-red-600 text-white py-4 rounded-lg font-semibold hover:bg-red-700 transition-colors">
+                    Enviar Reporte
+                </button>
+
+                <p class="text-xs text-gray-500 text-center mt-4">Los reportes son revisados por el equipo de MiceNet en menos de 24 horas.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-center">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">¡Gracias por tu feedback!</h3>
+            <p class="text-gray-600 mb-6" id="success-message">Tu valoración ayuda a mejorar las recomendaciones de la IA.</p>
+            <button onclick="closeSuccessModal()" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                Entendido
+            </button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-3 z-40">
+        <div class="flex items-center justify-around">
+            <a href="user-home.html" class="nav-item flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span class="text-xs mt-1">Inicio</span>
+            </a>
+            <a href="user-explore.html" class="nav-item flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <span class="text-xs mt-1">Explorar</span>
+            </a>
+            <a href="user-messages.html" class="nav-item flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                <span class="text-xs mt-1">Mensajes</span>
+            </a>
+            <a href="user-profile-own.html" class="nav-item flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span class="text-xs mt-1">Perfil</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        let currentRating = 0;
+        let currentMatchQuality = '';
+        let currentUrgency = '';
+        let currentUserId = '';
+
+        function openFeedbackModal(userId, name, role, gradient) {
+            currentUserId = userId;
+            currentRating = 0;
+            currentMatchQuality = '';
+
+            document.getElementById('modal-name').textContent = name;
+            document.getElementById('modal-role').textContent = role;
+
+            const avatar = document.getElementById('modal-avatar');
+            avatar.className = `w-16 h-16 bg-gradient-to-br ${gradient} rounded-full flex items-center justify-center text-white font-bold text-2xl`;
+            avatar.textContent = name.charAt(0);
+
+            // Reset stars
+            const stars = document.querySelectorAll('#feedback-modal .star');
+            stars.forEach(star => {
+                star.classList.remove('filled');
+                star.classList.add('empty');
+            });
+
+            // Reset match quality buttons
+            document.querySelectorAll('.match-quality-btn').forEach(btn => {
+                btn.classList.remove('border-purple-500', 'bg-purple-50');
+                btn.classList.add('bg-gray-100');
+            });
+
+            document.getElementById('feedback-comment').value = '';
+            document.getElementById('anonymous-feedback').checked = false;
+            document.getElementById('rating-text').textContent = 'Selecciona una valoración';
+
+            document.getElementById('feedback-modal').classList.remove('hidden');
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById('feedback-modal').classList.add('hidden');
+        }
+
+        function setRating(rating) {
+            currentRating = rating;
+            const stars = document.querySelectorAll('#feedback-modal .star');
+            const ratingTexts = ['', 'Muy poco útil', 'Poco útil', 'Útil', 'Muy útil', 'Excelente'];
+
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.remove('empty');
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                    star.classList.add('empty');
+                }
+            });
+
+            document.getElementById('rating-text').textContent = ratingTexts[rating];
+        }
+
+        function setMatchQuality(quality) {
+            currentMatchQuality = quality;
+            document.querySelectorAll('.match-quality-btn').forEach(btn => {
+                btn.classList.remove('border-purple-500', 'bg-purple-50');
+                btn.classList.add('bg-gray-100');
+            });
+
+            event.target.closest('.match-quality-btn').classList.remove('bg-gray-100');
+            event.target.closest('.match-quality-btn').classList.add('border-purple-500', 'bg-purple-50');
+        }
+
+        function submitFeedback() {
+            if (currentRating === 0) {
+                alert('Por favor, selecciona una valoración');
+                return;
+            }
+
+            if (currentMatchQuality === '') {
+                alert('Por favor, valora la precisión del match');
+                return;
+            }
+
+            // Simulate submission
+            closeFeedbackModal();
+            document.getElementById('success-message').textContent = 'Tu valoración ayuda a mejorar las recomendaciones de la IA.';
+            document.getElementById('success-modal').classList.remove('hidden');
+
+            // In real app, send data to backend
+            console.log('Feedback submitted:', {
+                userId: currentUserId,
+                rating: currentRating,
+                matchQuality: currentMatchQuality,
+                comment: document.getElementById('feedback-comment').value,
+                anonymous: document.getElementById('anonymous-feedback').checked
+            });
+        }
+
+        function openReportModal() {
+            currentUrgency = '';
+            document.getElementById('problem-type').value = '';
+            document.getElementById('related-user').value = '';
+            document.getElementById('report-description').value = '';
+
+            document.querySelectorAll('.urgency-btn').forEach(btn => {
+                btn.classList.remove('border-red-500', 'bg-red-50');
+                btn.classList.add('bg-gray-100');
+            });
+
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+        }
+
+        function setUrgency(urgency) {
+            currentUrgency = urgency;
+            document.querySelectorAll('.urgency-btn').forEach(btn => {
+                btn.classList.remove('border-red-500', 'bg-red-50');
+                btn.classList.add('bg-gray-100');
+            });
+
+            const clickedBtn = event.target.closest('.urgency-btn');
+            clickedBtn.classList.remove('bg-gray-100');
+            clickedBtn.classList.add('border-red-500', 'bg-red-50');
+        }
+
+        function submitReport() {
+            const problemType = document.getElementById('problem-type').value;
+            const description = document.getElementById('report-description').value;
+
+            if (!problemType) {
+                alert('Por favor, selecciona el tipo de problema');
+                return;
+            }
+
+            if (!description.trim()) {
+                alert('Por favor, describe el problema');
+                return;
+            }
+
+            if (!currentUrgency) {
+                alert('Por favor, selecciona la urgencia');
+                return;
+            }
+
+            // Simulate submission
+            closeReportModal();
+            document.getElementById('success-message').textContent = 'Tu reporte ha sido enviado. El equipo lo revisará pronto.';
+            document.getElementById('success-modal').classList.remove('hidden');
+
+            // In real app, send data to backend
+            console.log('Report submitted:', {
+                problemType: problemType,
+                relatedUser: document.getElementById('related-user').value,
+                description: description,
+                urgency: currentUrgency
+            });
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+            // Reload page to show updated state
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>

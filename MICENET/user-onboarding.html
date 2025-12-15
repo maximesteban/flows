@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding - MiceNet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .avatar-card {
+            transition: all 0.3s ease;
+        }
+        .avatar-card:hover {
+            transform: scale(1.05);
+        }
+        .avatar-card.selected {
+            ring-width: 4px;
+            ring-color: #667eea;
+            transform: scale(1.05);
+        }
+        .recording-pulse {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Progress Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+        <div class="h-1 bg-gray-200">
+            <div id="progress-bar" class="h-full gradient-bg transition-all duration-300" style="width: 33%"></div>
+        </div>
+        <div class="px-4 py-3 flex items-center justify-between">
+            <button onclick="goBack()" class="text-gray-600 hover:text-gray-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <span id="step-indicator" class="text-sm font-medium text-gray-600">Paso 1 de 3</span>
+            <button onclick="window.location.href='index.html'" class="text-gray-600 hover:text-gray-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="pt-20 pb-8 px-4 max-w-md mx-auto">
+        <!-- Step 1: Avatar Selection -->
+        <div id="step-1" class="step-content">
+            <div class="text-center mb-8">
+                <div class="inline-block p-4 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl mb-4">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Elige tu avatar</h1>
+                <p class="text-gray-600">Selecciona un perfil existente o crea uno nuevo</p>
+            </div>
+
+            <!-- Existing Avatars -->
+            <div class="space-y-4 mb-6">
+                <h3 class="text-sm font-semibold text-gray-700 uppercase">Perfiles Existentes</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="avatar-card bg-white rounded-xl p-4 border-2 border-gray-200 cursor-pointer" onclick="selectAvatar(this, 'professional')">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full mx-auto mb-3 flex items-center justify-center text-white text-2xl font-bold">
+                            P
+                        </div>
+                        <h4 class="font-semibold text-gray-800 text-center text-sm">Profesional</h4>
+                        <div class="flex flex-wrap gap-1 justify-center mt-2">
+                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">Tech</span>
+                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">Negocios</span>
+                        </div>
+                    </div>
+
+                    <div class="avatar-card bg-white rounded-xl p-4 border-2 border-gray-200 cursor-pointer" onclick="selectAvatar(this, 'creative')">
+                        <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full mx-auto mb-3 flex items-center justify-center text-white text-2xl font-bold">
+                            C
+                        </div>
+                        <h4 class="font-semibold text-gray-800 text-center text-sm">Creativo</h4>
+                        <div class="flex flex-wrap gap-1 justify-center mt-2">
+                            <span class="bg-pink-100 text-pink-700 text-xs px-2 py-1 rounded-full">Arte</span>
+                            <span class="bg-pink-100 text-pink-700 text-xs px-2 py-1 rounded-full">Diseño</span>
+                        </div>
+                    </div>
+
+                    <div class="avatar-card bg-white rounded-xl p-4 border-2 border-gray-200 cursor-pointer" onclick="selectAvatar(this, 'entrepreneur')">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-500 rounded-full mx-auto mb-3 flex items-center justify-center text-white text-2xl font-bold">
+                            E
+                        </div>
+                        <h4 class="font-semibold text-gray-800 text-center text-sm">Emprendedor</h4>
+                        <div class="flex flex-wrap gap-1 justify-center mt-2">
+                            <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">Startup</span>
+                            <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">VC</span>
+                        </div>
+                    </div>
+
+                    <div class="avatar-card bg-white rounded-xl p-4 border-2 border-dashed border-gray-300 cursor-pointer hover:border-purple-500" onclick="selectAvatar(this, 'new')">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                        </div>
+                        <h4 class="font-semibold text-gray-600 text-center text-sm">Crear Nuevo</h4>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="nextStep()" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all">
+                Continuar
+            </button>
+        </div>
+
+        <!-- Step 2: Edit Profile -->
+        <div id="step-2" class="step-content hidden">
+            <div class="text-center mb-8">
+                <div class="inline-block p-4 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl mb-4">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Personaliza tu perfil</h1>
+                <p class="text-gray-600">Edita la información de tu avatar</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm mb-6">
+                <!-- Profile Photo -->
+                <div class="text-center mb-6">
+                    <div class="w-24 h-24 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full mx-auto mb-3 flex items-center justify-center text-white text-3xl font-bold">
+                        P
+                    </div>
+                    <button class="text-purple-600 text-sm font-medium">Cambiar foto</button>
+                </div>
+
+                <!-- Form Fields -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+                        <input type="text" value="Profesional" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Intereses (selecciona o añade)</label>
+                        <div class="flex flex-wrap gap-2 mb-2">
+                            <span class="bg-purple-100 text-purple-700 text-sm px-3 py-1 rounded-full flex items-center">
+                                Tech
+                                <button class="ml-2">×</button>
+                            </span>
+                            <span class="bg-purple-100 text-purple-700 text-sm px-3 py-1 rounded-full flex items-center">
+                                Negocios
+                                <button class="ml-2">×</button>
+                            </span>
+                        </div>
+                        <input type="text" placeholder="Añadir interés..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">LinkedIn</label>
+                        <input type="url" placeholder="https://linkedin.com/in/..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Twitter/X</label>
+                        <input type="text" placeholder="@username" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="nextStep()" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all">
+                Continuar
+            </button>
+        </div>
+
+        <!-- Step 3: Voice/Text Input -->
+        <div id="step-3" class="step-content hidden">
+            <div class="text-center mb-8">
+                <div class="inline-block p-4 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl mb-4">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Cuéntanos sobre ti</h1>
+                <p class="text-gray-600">Escribe o graba tu mensaje para que la IA te conozca mejor</p>
+            </div>
+
+            <!-- Tab Selector -->
+            <div class="flex bg-gray-100 rounded-xl p-1 mb-6">
+                <button onclick="switchInputMode('text')" class="input-mode-tab flex-1 py-3 rounded-lg font-medium transition-all bg-white shadow-sm text-purple-600">
+                    Escribir
+                </button>
+                <button onclick="switchInputMode('voice')" class="input-mode-tab flex-1 py-3 rounded-lg font-medium transition-all text-gray-600">
+                    Grabar Audio
+                </button>
+            </div>
+
+            <!-- Text Input Mode -->
+            <div id="text-input" class="input-mode">
+                <div class="bg-white rounded-xl p-6 shadow-sm mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">¿Quién eres y qué buscas en este evento?</label>
+                    <textarea rows="6" placeholder="Ejemplo: Soy desarrollador full-stack con 5 años de experiencia. Vengo a este evento para conocer fundadores de startups tech y aprender sobre nuevas tendencias en IA..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"></textarea>
+                    <p class="text-sm text-gray-500 mt-2">La IA usará esta información para crear tu perfil y recomendarte conexiones relevantes</p>
+                </div>
+            </div>
+
+            <!-- Voice Input Mode -->
+            <div id="voice-input" class="input-mode hidden">
+                <div class="bg-white rounded-xl p-8 shadow-sm mb-6 text-center">
+                    <div id="record-button" class="w-32 h-32 mx-auto mb-4 bg-gradient-to-br from-red-500 to-pink-500 rounded-full flex items-center justify-center cursor-pointer hover:scale-105 transition-transform" onclick="toggleRecording()">
+                        <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                        </svg>
+                    </div>
+                    <p id="recording-status" class="text-gray-600 font-medium">Toca para empezar a grabar</p>
+                    <div id="recording-indicator" class="hidden mt-4">
+                        <div class="flex items-center justify-center space-x-2">
+                            <div class="w-3 h-3 bg-red-500 rounded-full recording-pulse"></div>
+                            <span class="text-red-500 font-semibold">Grabando...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recorded Audio Preview (hidden by default) -->
+                <div id="audio-preview" class="bg-gray-50 rounded-xl p-4 mb-6 hidden">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-800">Audio grabado</p>
+                                <p class="text-sm text-gray-500">00:45</p>
+                            </div>
+                        </div>
+                        <button class="text-red-600 hover:text-red-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Processing Hint -->
+            <div class="bg-purple-50 border border-purple-200 rounded-xl p-4 mb-6">
+                <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0">
+                        <svg class="w-5 h-5 text-purple-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-purple-900">La IA analizará tu información</p>
+                        <p class="text-xs text-purple-700 mt-1">Tu perfil será personalizado según el evento y las personas que buscan perfiles como el tuyo</p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="finishOnboarding()" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all">
+                Finalizar y Comenzar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedAvatar = null;
+        let isRecording = false;
+
+        function selectAvatar(element, avatarType) {
+            // Remove selection from all avatars
+            document.querySelectorAll('.avatar-card').forEach(card => {
+                card.classList.remove('selected', 'ring-4', 'ring-purple-500');
+            });
+
+            // Add selection to clicked avatar
+            element.classList.add('selected', 'ring-4', 'ring-purple-500');
+            selectedAvatar = avatarType;
+        }
+
+        function nextStep() {
+            if (currentStep === 1 && !selectedAvatar) {
+                alert('Por favor selecciona un avatar');
+                return;
+            }
+
+            currentStep++;
+            updateStep();
+        }
+
+        function goBack() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStep();
+            }
+        }
+
+        function updateStep() {
+            // Hide all steps
+            document.querySelectorAll('.step-content').forEach(step => {
+                step.classList.add('hidden');
+            });
+
+            // Show current step
+            document.getElementById('step-' + currentStep).classList.remove('hidden');
+
+            // Update progress bar
+            const progress = (currentStep / 3) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+
+            // Update step indicator
+            document.getElementById('step-indicator').textContent = 'Paso ' + currentStep + ' de 3';
+        }
+
+        function switchInputMode(mode) {
+            // Update tabs
+            document.querySelectorAll('.input-mode-tab').forEach(tab => {
+                tab.classList.remove('bg-white', 'shadow-sm', 'text-purple-600');
+                tab.classList.add('text-gray-600');
+            });
+            event.target.classList.add('bg-white', 'shadow-sm', 'text-purple-600');
+            event.target.classList.remove('text-gray-600');
+
+            // Switch input modes
+            document.querySelectorAll('.input-mode').forEach(input => {
+                input.classList.add('hidden');
+            });
+            document.getElementById(mode + '-input').classList.remove('hidden');
+        }
+
+        function toggleRecording() {
+            isRecording = !isRecording;
+            const button = document.getElementById('record-button');
+            const status = document.getElementById('recording-status');
+            const indicator = document.getElementById('recording-indicator');
+            const audioPreview = document.getElementById('audio-preview');
+
+            if (isRecording) {
+                button.classList.add('scale-110');
+                status.textContent = 'Grabando... Toca para detener';
+                indicator.classList.remove('hidden');
+            } else {
+                button.classList.remove('scale-110');
+                status.textContent = 'Toca para empezar a grabar';
+                indicator.classList.add('hidden');
+                audioPreview.classList.remove('hidden');
+            }
+        }
+
+        function finishOnboarding() {
+            // Simulate AI processing
+            window.location.href = 'user-home.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente IA - MiceNet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .message-bubble {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .typing-indicator span {
+            animation: blink 1.4s infinite;
+        }
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes blink {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="gradient-bg text-white px-4 py-4 flex items-center space-x-3">
+        <button onclick="window.history.back()" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+        </button>
+        <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+        </div>
+        <div class="flex-1">
+            <h1 class="font-bold">Asistente IA</h1>
+            <div class="flex items-center text-xs text-white/80">
+                <div class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+                <span>Online</span>
+            </div>
+        </div>
+        <button class="p-2 hover:bg-white/10 rounded-full transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+            </svg>
+        </button>
+    </header>
+
+    <!-- Quick Actions Bar -->
+    <div class="bg-white border-b border-gray-200 px-4 py-3 overflow-x-auto">
+        <div class="flex space-x-2">
+            <button onclick="sendQuickMessage('¿Con quién debería hablar ahora?')" class="quick-action-btn px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium whitespace-nowrap hover:bg-purple-200 transition-colors">
+                🎯 ¿Con quién hablar?
+            </button>
+            <button onclick="sendQuickMessage('¿Qué eventos me recomiendas?')" class="quick-action-btn px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium whitespace-nowrap hover:bg-blue-200 transition-colors">
+                📅 Recomendaciones
+            </button>
+            <button onclick="sendQuickMessage('Dame tips para networking')" class="quick-action-btn px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium whitespace-nowrap hover:bg-green-200 transition-colors">
+                💡 Tips networking
+            </button>
+            <button onclick="sendQuickMessage('Resumen de mi día')" class="quick-action-btn px-4 py-2 bg-orange-100 text-orange-700 rounded-full text-sm font-medium whitespace-nowrap hover:bg-orange-200 transition-colors">
+                📊 Mi resumen
+            </button>
+        </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <!-- Welcome Message -->
+        <div class="message-bubble flex items-start space-x-2">
+            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm border border-gray-100">
+                    <p class="text-gray-800">
+                        ¡Hola! Soy tu asistente IA de MiceNet 👋
+                    </p>
+                    <p class="text-gray-800 mt-2">
+                        Estoy aquí para ayudarte a aprovechar al máximo el evento. Puedo:
+                    </p>
+                    <ul class="mt-2 space-y-1 text-sm text-gray-700">
+                        <li>• Recomendarte personas para conectar</li>
+                        <li>• Sugerir sesiones basadas en tus intereses</li>
+                        <li>• Dar tips de networking</li>
+                        <li>• Responder preguntas sobre el evento</li>
+                    </ul>
+                    <p class="text-gray-800 mt-2">
+                        ¿En qué puedo ayudarte? 🚀
+                    </p>
+                </div>
+                <span class="text-xs text-gray-500 mt-1 block">10:30</span>
+            </div>
+        </div>
+
+        <!-- Example User Message -->
+        <div class="message-bubble flex items-end justify-end space-x-2">
+            <div class="text-right">
+                <div class="gradient-bg rounded-2xl rounded-tr-none px-4 py-3 inline-block text-white shadow-sm">
+                    <p>¿Con quién debería hablar ahora?</p>
+                </div>
+                <span class="text-xs text-gray-500 mt-1 block">10:31</span>
+            </div>
+        </div>
+
+        <!-- AI Response with Recommendations -->
+        <div class="message-bubble flex items-start space-x-2">
+            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm border border-gray-100">
+                    <p class="text-gray-800 mb-3">
+                        ¡Perfecto! Basado en tu perfil y actividad, te recomiendo hablar con estas 3 personas ahora mismo:
+                    </p>
+
+                    <!-- Recommendation Cards -->
+                    <div class="space-y-3">
+                        <!-- Person 1 -->
+                        <div class="bg-purple-50 rounded-xl p-3 border border-purple-200">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-500 rounded-lg flex items-center justify-center text-white text-lg font-bold flex-shrink-0">
+                                    M
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <h4 class="font-semibold text-gray-800">María García</h4>
+                                        <span class="text-xs font-bold text-purple-600">90%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 mb-2">Product Manager @ TechCorp</p>
+                                    <div class="flex items-center text-xs text-gray-600 mb-2">
+                                        <svg class="w-3 h-3 mr-1 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span>Online ahora • Coffee Area</span>
+                                    </div>
+                                    <p class="text-xs text-purple-700 mb-2">
+                                        ⚡ <strong>Por qué:</strong> Está buscando devs para su startup de IA
+                                    </p>
+                                    <button onclick="viewProfile(1)" class="w-full py-2 bg-purple-600 text-white rounded-lg text-xs font-semibold hover:bg-purple-700 transition-colors">
+                                        Ver perfil y conectar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Person 2 -->
+                        <div class="bg-blue-50 rounded-xl p-3 border border-blue-200">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center text-white text-lg font-bold flex-shrink-0">
+                                    J
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <h4 class="font-semibold text-gray-800">Jorge Martínez</h4>
+                                        <span class="text-xs font-bold text-blue-600">75%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 mb-2">CTO @ InnovaLabs</p>
+                                    <div class="flex items-center text-xs text-gray-600 mb-2">
+                                        <svg class="w-3 h-3 mr-1 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span>Online ahora • Sala 3</span>
+                                    </div>
+                                    <p class="text-xs text-blue-700 mb-2">
+                                        ⚡ <strong>Por qué:</strong> Intereses comunes en cloud y DevOps
+                                    </p>
+                                    <button onclick="viewProfile(2)" class="w-full py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition-colors">
+                                        Ver perfil y conectar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-gray-600 text-sm mt-3">
+                        💬 ¿Quieres que te ayude a escribir un mensaje de presentación?
+                    </p>
+                </div>
+                <span class="text-xs text-gray-500 mt-1 block">10:32</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Typing Indicator (hidden by default) -->
+    <div id="typing-indicator" class="px-4 pb-2 hidden">
+        <div class="flex items-start space-x-2">
+            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+            </div>
+            <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm border border-gray-100">
+                <div class="typing-indicator flex space-x-1">
+                    <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                    <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                    <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="bg-white border-t border-gray-200 p-4">
+        <div class="flex items-end space-x-2">
+            <button class="p-3 hover:bg-gray-100 rounded-full transition-colors">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+            </button>
+            <div class="flex-1 bg-gray-100 rounded-2xl px-4 py-3 flex items-center space-x-2">
+                <input id="message-input" type="text" placeholder="Pregunta lo que quieras..." class="flex-1 bg-transparent focus:outline-none text-gray-800" onkeypress="handleKeyPress(event)">
+                <button onclick="toggleVoiceInput()" class="p-2 hover:bg-gray-200 rounded-full transition-colors">
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                    </svg>
+                </button>
+            </div>
+            <button onclick="sendMessage()" class="p-3 gradient-bg rounded-full hover:shadow-lg transition-all">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const message = input.value.trim();
+            if (message) {
+                addUserMessage(message);
+                input.value = '';
+                showTypingIndicator();
+
+                // Simulate AI response
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    addAIResponse(message);
+                }, 2000);
+            }
+        }
+
+        function sendQuickMessage(message) {
+            addUserMessage(message);
+            showTypingIndicator();
+
+            setTimeout(() => {
+                hideTypingIndicator();
+                addAIResponse(message);
+            }, 2000);
+        }
+
+        function addUserMessage(text) {
+            const container = document.getElementById('chat-messages');
+            const time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message-bubble flex items-end justify-end space-x-2';
+            messageDiv.innerHTML = `
+                <div class="text-right">
+                    <div class="gradient-bg rounded-2xl rounded-tr-none px-4 py-3 inline-block text-white shadow-sm max-w-xs">
+                        <p>${text}</p>
+                    </div>
+                    <span class="text-xs text-gray-500 mt-1 block">${time}</span>
+                </div>
+            `;
+
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addAIResponse(userMessage) {
+            const container = document.getElementById('chat-messages');
+            const time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+            // Simulate different responses based on user message
+            let response = '¡Entendido! Déjame ayudarte con eso. 🤔';
+
+            if (userMessage.toLowerCase().includes('evento') || userMessage.toLowerCase().includes('recomienda')) {
+                response = '📅 Te recomiendo estos eventos basándome en tus intereses:\n\n• Workshop de ML Práctico (17:00 - Lab 3)\n• Panel sobre Startups Tech (15:30 - Sala Principal)\n• Networking Coffee Break (13:00 - Coffee Area)\n\n¿Quieres que te añada alguno a tu calendario?';
+            } else if (userMessage.toLowerCase().includes('tips') || userMessage.toLowerCase().includes('networking')) {
+                response = '💡 Aquí van algunos tips de networking:\n\n1. Prepara un elevator pitch de 30 segundos\n2. Haz preguntas abiertas sobre sus proyectos\n3. Sigue up después del evento en LinkedIn\n4. Sé genuino y muestra interés real\n5. Comparte tu QR code para conectar rápido\n\n¿Quieres que practiquemos tu pitch?';
+            } else if (userMessage.toLowerCase().includes('resumen')) {
+                response = '📊 Resumen de tu día:\n\n✅ 12 conexiones nuevas (90% match promedio)\n✅ 3 reuniones confirmadas\n✅ 2 sesiones asistidas\n📈 80% más activo que ayer\n\n🎯 Próxima sugerencia: Habla con Ana Rodríguez (84% match) en el Coffee Break';
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message-bubble flex items-start space-x-2';
+            messageDiv.innerHTML = `
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm border border-gray-100">
+                        <p class="text-gray-800 whitespace-pre-line">${response}</p>
+                    </div>
+                    <span class="text-xs text-gray-500 mt-1 block">${time}</span>
+                </div>
+            `;
+
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typing-indicator').classList.remove('hidden');
+            const container = document.getElementById('chat-messages');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typing-indicator').classList.add('hidden');
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function toggleVoiceInput() {
+            alert('🎤 Nota de voz activada. Di tu pregunta...');
+        }
+
+        function viewProfile(userId) {
+            window.location.href = `user-profile.html?id=${userId}`;
+        }
+    </script>
+</body>
+</html>

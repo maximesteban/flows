@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi QR - MiceNet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .qr-glow {
+            box-shadow: 0 0 40px rgba(102, 126, 234, 0.4);
+        }
+        @keyframes scan {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(100%); }
+        }
+        .scan-line {
+            animation: scan 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen pb-20">
+    <!-- Header -->
+    <header class="gradient-bg text-white px-4 py-6">
+        <div class="flex items-center justify-between mb-4">
+            <button onclick="window.history.back()" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <h1 class="text-xl font-bold">Mi Código QR</h1>
+            <button onclick="showOptions()" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                </svg>
+            </button>
+        </div>
+        <p class="text-white/90 text-center text-sm">Comparte tu QR para conectar al instante</p>
+    </header>
+
+    <!-- Tab Switcher -->
+    <div class="px-4 py-4">
+        <div class="flex bg-gray-100 rounded-xl p-1">
+            <button onclick="switchTab('my-qr')" id="tab-my-qr" class="flex-1 py-3 rounded-lg font-semibold transition-all bg-white shadow text-purple-600">
+                Mi QR
+            </button>
+            <button onclick="switchTab('scan')" id="tab-scan" class="flex-1 py-3 rounded-lg font-semibold transition-all text-gray-600">
+                Escanear
+            </button>
+        </div>
+    </div>
+
+    <!-- My QR Tab -->
+    <div id="my-qr-content" class="px-4">
+        <!-- Profile Info -->
+        <div class="bg-white rounded-2xl shadow-sm p-6 mb-6 border border-gray-100">
+            <div class="flex items-center space-x-4 mb-4">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">
+                    P
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800">Profesional</h2>
+                    <p class="text-gray-600">Full-Stack Developer</p>
+                </div>
+            </div>
+
+            <!-- QR Code -->
+            <div class="bg-white rounded-xl p-8 border-2 border-purple-200 qr-glow mb-4">
+                <div id="qrcode" class="flex justify-center"></div>
+            </div>
+
+            <!-- QR ID -->
+            <div class="bg-purple-50 rounded-lg p-3 text-center mb-4">
+                <p class="text-sm text-purple-700 font-mono font-semibold">ID: MICE-2025-P-4829</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="shareQR()" class="flex items-center justify-center space-x-2 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                    </svg>
+                    <span>Compartir</span>
+                </button>
+                <button onclick="downloadQR()" class="flex items-center justify-center space-x-2 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    <span>Descargar</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Usage Info -->
+        <div class="bg-blue-50 rounded-2xl p-4 border border-blue-200 mb-6">
+            <h3 class="font-semibold text-blue-900 mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Usos del QR
+            </h3>
+            <div class="space-y-2 text-sm text-blue-800">
+                <div class="flex items-start">
+                    <svg class="w-4 h-4 mr-2 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Check-in en el evento y sesiones</span>
+                </div>
+                <div class="flex items-start">
+                    <svg class="w-4 h-4 mr-2 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Conectar instantáneamente con otros asistentes</span>
+                </div>
+                <div class="flex items-start">
+                    <svg class="w-4 h-4 mr-2 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Compartir tu perfil sin necesidad de buscar</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Scans -->
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+            <h3 class="font-bold text-gray-800 mb-4">Escaneos Recientes</h3>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">
+                            M
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-800 text-sm">María García</p>
+                            <p class="text-xs text-gray-500">Te escaneó • Hace 5 min</p>
+                        </div>
+                    </div>
+                    <button class="text-purple-600 text-sm font-medium">
+                        Ver perfil
+                    </button>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">
+                            J
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-800 text-sm">Jorge Martínez</p>
+                            <p class="text-xs text-gray-500">Check-in • Hace 2 horas</p>
+                        </div>
+                    </div>
+                    <span class="text-green-600 text-sm font-medium">✓ Conectado</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scan Tab -->
+    <div id="scan-content" class="px-4 hidden">
+        <!-- Camera View -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border-2 border-purple-200">
+            <div class="relative aspect-square bg-gray-900">
+                <!-- Simulated camera view -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-white/50 text-center">
+                        <svg class="w-32 h-32 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                        </svg>
+                        <p class="text-sm">Apunta la cámara al código QR</p>
+                    </div>
+                </div>
+
+                <!-- Scan frame -->
+                <div class="absolute inset-8 border-4 border-purple-500 rounded-2xl">
+                    <div class="absolute inset-0 overflow-hidden">
+                        <div class="scan-line w-full h-1 bg-purple-500 opacity-75"></div>
+                    </div>
+                </div>
+
+                <!-- Corner indicators -->
+                <div class="absolute top-8 left-8 w-8 h-8 border-l-4 border-t-4 border-purple-500 rounded-tl-lg"></div>
+                <div class="absolute top-8 right-8 w-8 h-8 border-r-4 border-t-4 border-purple-500 rounded-tr-lg"></div>
+                <div class="absolute bottom-8 left-8 w-8 h-8 border-l-4 border-b-4 border-purple-500 rounded-bl-lg"></div>
+                <div class="absolute bottom-8 right-8 w-8 h-8 border-r-4 border-b-4 border-purple-500 rounded-br-lg"></div>
+            </div>
+        </div>
+
+        <!-- Scan Instructions -->
+        <div class="bg-purple-50 rounded-xl p-4 border border-purple-200 mb-6">
+            <div class="flex items-start space-x-3">
+                <svg class="w-6 h-6 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div>
+                    <p class="font-semibold text-purple-900 mb-1">Cómo escanear</p>
+                    <p class="text-sm text-purple-800">
+                        1. Asegúrate de tener buena iluminación<br>
+                        2. Centra el QR en el recuadro<br>
+                        3. Mantén la cámara estable<br>
+                        4. Se conectará automáticamente
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alternative: Manual ID Input -->
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+            <h3 class="font-semibold text-gray-800 mb-3">¿No funciona el escáner?</h3>
+            <p class="text-sm text-gray-600 mb-4">Introduce el ID manualmente:</p>
+            <div class="flex space-x-2">
+                <input type="text" placeholder="MICE-2025-X-XXXX" class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 font-mono text-sm">
+                <button onclick="connectById()" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all">
+                    Conectar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scan Success Modal -->
+    <div id="scan-success-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-6">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center">
+            <!-- Success Animation -->
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">¡Conexión exitosa!</h3>
+            <p class="text-gray-600 mb-6">Te has conectado con:</p>
+
+            <!-- Profile Preview -->
+            <div class="bg-gray-50 rounded-xl p-4 mb-6">
+                <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
+                    M
+                </div>
+                <h4 class="font-bold text-gray-800">María García</h4>
+                <p class="text-sm text-gray-600">Product Manager @ TechCorp</p>
+                <div class="mt-3">
+                    <span class="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full font-medium">90% match</span>
+                </div>
+            </div>
+
+            <div class="flex space-x-3">
+                <button onclick="closeSuccessModal()" class="flex-1 py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold">
+                    Cerrar
+                </button>
+                <button onclick="viewProfile()" class="flex-1 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold">
+                    Ver Perfil
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-3 z-40">
+        <div class="flex items-center justify-around">
+            <a href="user-home.html" class="nav-item flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span class="text-xs mt-1">Inicio</span>
+            </a>
+            <a href="user-explore.html" class="nav-item flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <span class="text-xs mt-1">Explorar</span>
+            </a>
+            <a href="user-messages.html" class="nav-item flex flex-col items-center text-gray-400 relative">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                <span class="text-xs mt-1">Mensajes</span>
+                <span class="absolute -top-1 -right-2 w-4 h-4 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">3</span>
+            </a>
+            <a href="user-profile-own.html" class="nav-item flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span class="text-xs mt-1">Perfil</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // Generate QR Code
+        new QRCode(document.getElementById("qrcode"), {
+            text: "MICE-2025-P-4829-PROFESIONAL",
+            width: 200,
+            height: 200,
+            colorDark: "#667eea",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        function switchTab(tab) {
+            // Update tabs
+            const tabs = ['my-qr', 'scan'];
+            tabs.forEach(t => {
+                const tabBtn = document.getElementById(`tab-${t}`);
+                const content = document.getElementById(`${t}-content`);
+
+                if (t === tab) {
+                    tabBtn.classList.add('bg-white', 'shadow', 'text-purple-600');
+                    tabBtn.classList.remove('text-gray-600');
+                    content.classList.remove('hidden');
+                } else {
+                    tabBtn.classList.remove('bg-white', 'shadow', 'text-purple-600');
+                    tabBtn.classList.add('text-gray-600');
+                    content.classList.add('hidden');
+                }
+            });
+
+            // Simulate camera activation when switching to scan tab
+            if (tab === 'scan') {
+                console.log('Activating camera...');
+                // Simulate QR detection after 3 seconds
+                setTimeout(() => {
+                    showScanSuccess();
+                }, 3000);
+            }
+        }
+
+        function shareQR() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Mi QR - MiceNet',
+                    text: 'Escanea mi QR para conectar en MiceNet',
+                    url: window.location.href
+                });
+            } else {
+                alert('Función de compartir: Copiar link al portapapeles');
+            }
+        }
+
+        function downloadQR() {
+            alert('Descargando QR como imagen...');
+        }
+
+        function showOptions() {
+            alert('Opciones:\n- Personalizar QR\n- Ver historial\n- Configuración de privacidad');
+        }
+
+        function connectById() {
+            const input = document.querySelector('input[type="text"]');
+            if (input.value.trim()) {
+                showScanSuccess();
+            } else {
+                alert('Por favor introduce un ID válido');
+            }
+        }
+
+        function showScanSuccess() {
+            document.getElementById('scan-success-modal').classList.remove('hidden');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('scan-success-modal').classList.add('hidden');
+        }
+
+        function viewProfile() {
+            window.location.href = 'user-profile.html?id=1';
+        }
+    </script>
+</body>
+</html>
