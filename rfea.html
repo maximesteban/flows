@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información por Determinar - RFEA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .gradient-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #ffd700 0%, #ff4500 50%, #ff8c00 100%);
+            z-index: 1000;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 60px 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .rfea-logo {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            color: #000000;
+            font-size: 2em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        p {
+            font-size: 0.8em;
+            font-weight: bold;
+            padding-top: 10px;
+        }
+
+        .title {
+            color: #e30613;
+        }
+
+        .subtitle {
+            color: #333333;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .info-box {
+            background: #f9f9f9;
+            border-left: 4px solid #e30613;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            text-align: justify;
+        }
+
+        .info-box strong {
+            color: #000000;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #333333;
+            line-height: 1.8;
+        }
+
+        .rfea-link {
+            display: inline-block;
+            background: #e30613;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(227, 6, 19, 0.4);
+        }
+
+        .rfea-link:hover {
+            background: #c10511;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(227, 6, 19, 0.6);
+        }
+
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: #e30613;
+            border-radius: 50%;
+            animation: loading 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes loading {
+            0%, 80%, 100% {
+                transform: scale(0);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .subtitle {
+                font-size: 1em;
+            }
+
+            .rfea-logo {
+                max-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bar"></div>
+
+    <div class="container">
+        <img src="img/RFEA.webp" alt="RFEA Logo" class="rfea-logo">
+
+
+        <h1 class="title">Información por Determinar</h1>
+
+        <p class="subtitle">
+            Estamos trabajando en recopilar y organizar toda la información relevante para esta sección.
+        </p>
+
+        <div class="loading-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <div class="info-box">
+            <strong>Mientras tanto...</strong>
+            <p>
+                Para obtener información actualizada, puedes consultar directamente la página web oficial de la <strong>Real Federación Española de Atletismo (RFEA)</strong>.
+            </p>
+        </div>
+
+        <a href="https://atletismorfea.es/" target="_blank" rel="noopener noreferrer" class="rfea-link">
+            Visitar Atletismo RFEA →
+        </a>
+
+        
+    </div>
+</body>
+</html>
