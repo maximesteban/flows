@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Información por Determinar - RFEA</title>
+    <title>Información por Determinar — Campeonatos RFEA</title>
+    <link rel="icon" type="image/png" sizes="180x180" href="img/RFEA-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/RFEA-icon.png">
     <style>
         * {
             margin: 0;
@@ -11,15 +13,32 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --rfea-magenta: #C8108C;
+            --rfea-red: #E33530;
+            --rfea-orange: #F2741E;
+            --rfea-yellow: #F5B500;
+            --rfea-primary: #E33530;
+            --color-text-main: #000000;
+            --color-text-muted: #6B7280;
+            --color-surface: #FFFFFF;
+            --color-surface-subtle: #F3F4F6;
+            --color-border: #E5E7EB;
+            --brand-gradient: linear-gradient(90deg, #C8108C 0%, #E33530 40%, #F2741E 75%, #F5B500 100%);
+        }
+
         body {
-            font-family: 'Arial', sans-serif;
-            background: #ffffff;
+            font-family: 'Roboto Flex', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-surface);
+            color: var(--color-text-main);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
             margin: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .gradient-bar {
@@ -27,13 +46,13 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 8px;
-            background: linear-gradient(90deg, #ffd700 0%, #ff4500 50%, #ff8c00 100%);
+            height: 6px;
+            background: var(--brand-gradient);
             z-index: 1000;
         }
 
         .container {
-            background: #ffffff;
+            background: var(--color-surface);
             padding: 60px 40px;
             max-width: 600px;
             width: 100%;
@@ -42,106 +61,129 @@
         }
 
         .rfea-logo {
-            max-width: 200px;
+            max-width: 240px;
             height: auto;
-            margin-bottom: 30px;
-            animation: fadeIn 1s ease-in;
+            margin-bottom: 36px;
+            animation: fadeIn 0.8s ease-out;
         }
 
         @keyframes fadeIn {
             0% {
                 opacity: 0;
-                transform: scale(0.9);
+                transform: translateY(8px);
             }
             100% {
                 opacity: 1;
-                transform: scale(1);
+                transform: translateY(0);
             }
         }
 
         h1 {
-            color: #000000;
-            font-size: 2em;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        p {
-            font-size: 0.8em;
-            font-weight: bold;
-            padding-top: 10px;
+            font-size: 1.9em;
+            margin-bottom: 16px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
         }
 
         .title {
-            color: #e30613;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
         }
 
         .subtitle {
-            color: #333333;
-            font-size: 1.2em;
-            margin-bottom: 30px;
+            color: var(--color-text-muted);
+            font-size: 1.05em;
+            margin-bottom: 28px;
             line-height: 1.6;
+            font-weight: 400;
         }
 
         .info-box {
-            background: #f9f9f9;
-            border-left: 4px solid #e30613;
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 8px;
-            text-align: justify;
+            background: var(--color-surface-subtle);
+            border: 1px solid var(--color-border);
+            padding: 22px 24px;
+            margin: 32px 0;
+            border-radius: 16px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--brand-gradient);
         }
 
         .info-box strong {
-            color: #000000;
-            margin-bottom: 10px;
+            color: var(--color-text-main);
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 700;
+            font-size: 0.95em;
         }
 
         .info-box p {
-            color: #333333;
-            line-height: 1.8;
+            color: var(--color-text-muted);
+            line-height: 1.6;
+            font-size: 0.95em;
         }
 
         .rfea-link {
-            display: inline-block;
-            background: #e30613;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--rfea-primary);
             color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
+            padding: 14px 28px;
+            border-radius: 999px;
             text-decoration: none;
-            font-weight: bold;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(227, 6, 19, 0.4);
+            font-weight: 600;
+            margin-top: 12px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            box-shadow: 0 6px 20px rgba(227, 53, 48, 0.25);
         }
 
         .rfea-link:hover {
-            background: #c10511;
+            background: #C8108C;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(227, 6, 19, 0.6);
+            box-shadow: 0 10px 28px rgba(200, 16, 140, 0.35);
         }
 
         .loading-dots {
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin: 30px 0;
+            margin: 28px 0;
         }
 
         .dot {
-            width: 12px;
-            height: 12px;
-            background: #e30613;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             animation: loading 1.4s infinite ease-in-out both;
         }
 
         .dot:nth-child(1) {
+            background: var(--rfea-magenta);
             animation-delay: -0.32s;
         }
 
         .dot:nth-child(2) {
+            background: var(--rfea-red);
             animation-delay: -0.16s;
+        }
+
+        .dot:nth-child(3) {
+            background: var(--rfea-orange);
         }
 
         @keyframes loading {
@@ -153,7 +195,6 @@
             }
         }
 
-
         @media (max-width: 768px) {
             .container {
                 padding: 40px 20px;
@@ -164,11 +205,11 @@
             }
 
             .subtitle {
-                font-size: 1em;
+                font-size: 0.95em;
             }
 
             .rfea-logo {
-                max-width: 150px;
+                max-width: 180px;
             }
         }
     </style>
@@ -177,8 +218,7 @@
     <div class="gradient-bar"></div>
 
     <div class="container">
-        <img src="img/RFEA.webp" alt="RFEA Logo" class="rfea-logo">
-
+        <img src="img/RFEA-new.png" alt="RFEA Atletismo" class="rfea-logo">
 
         <h1 class="title">Información por Determinar</h1>
 
@@ -193,17 +233,15 @@
         </div>
 
         <div class="info-box">
-            <strong>Mientras tanto...</strong>
+            <strong>Mientras tanto…</strong>
             <p>
-                Para obtener información actualizada, puedes consultar directamente la página web oficial de la <strong>Real Federación Española de Atletismo (RFEA)</strong>.
+                Para obtener información actualizada, puedes consultar directamente la página web oficial de la <strong style="display:inline">Real Federación Española de Atletismo</strong>.
             </p>
         </div>
 
         <a href="https://atletismorfea.es/" target="_blank" rel="noopener noreferrer" class="rfea-link">
             Visitar Atletismo RFEA →
         </a>
-
-        
     </div>
 </body>
 </html>
