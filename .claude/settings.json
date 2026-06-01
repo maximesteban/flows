@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /Users/maximestebancalvo/Documents/PLACENET/main/flows/BECARIOS && ls /Users/maximestebancalvo/Documents/PLACENET/main/flows/BECARIOS)"
+    ],
+    "additionalDirectories": [
+      "/Users/maximestebancalvo/Documents/PLACENET/main/flows"
+    ]
+  }
+}

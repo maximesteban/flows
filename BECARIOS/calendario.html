@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#000122">
+    <title>Interns Calendar — Placenet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-app': '#FBF8F3',
+                        'surface': '#FFFFFF',
+                        'ink': '#000122',
+                        'ink-soft': '#6C6051',
+                        'ink-muted': '#9CA3AF',
+                        'line': '#EFE5D7',
+                        'office': '#635FE5',
+                        'office-soft': '#EEEDFD',
+                        'off-soft': '#F3F0EA',
+                        'holiday': '#FF9052',
+                        'holiday-soft': '#FFE9DC'
+                    },
+                    fontFamily: {
+                        sans: ['"Roboto Flex"', 'system-ui', '-apple-system', 'sans-serif'],
+                        heading: ['"Rethink Sans"', '"Roboto Flex"', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            -webkit-text-size-adjust: 100%;
+            background: #FBF8F3;
+            min-height: 100%;
+        }
+        body {
+            font-family: 'Roboto Flex', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #FBF8F3;
+            min-height: 100vh;
+        }
+        .page-wrap {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #FBF8F3;
+            min-height: 100vh;
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* Desktop: frame the column nicely so it doesn't look stranded */
+        @media (min-width: 760px) {
+            html, body {
+                background: #EFE9DF;
+            }
+            .page-wrap {
+                margin: 24px auto;
+                border-radius: 24px;
+                box-shadow: 0 24px 60px -20px rgba(0, 1, 34, 0.18),
+                            0 8px 24px -12px rgba(0, 1, 34, 0.1);
+                min-height: calc(100vh - 48px);
+                /* clip-path keeps rounded corners without creating a scroll
+                   container (overflow:hidden would break sticky tabs) */
+                clip-path: inset(0 round 24px);
+            }
+            .tabs-wrap {
+                border-top-left-radius: 24px;
+                border-top-right-radius: 24px;
+            }
+        }
+
+        /* Week grid: 5 equal-width day cells */
+        .day-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 6px;
+        }
+
+        .day-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .day-letter {
+            font-size: 11px;
+            font-weight: 600;
+            color: #9CA3AF;
+            letter-spacing: 0.04em;
+        }
+
+        .pill {
+            width: 100%;
+            min-height: 56px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 4px;
+            border-radius: 14px;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            border: 1.5px solid transparent;
+            transition: transform 0.15s ease;
+        }
+        .pill .pill-note {
+            font-size: 9.5px;
+            font-weight: 600;
+            opacity: 0.85;
+            margin-top: 3px;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
+        /* Variants */
+        .pill-office {
+            background: #635FE5;
+            color: #fff;
+            box-shadow: 0 4px 12px -4px rgba(99, 95, 229, 0.5);
+        }
+        .pill-remote {
+            background: #FFFFFF;
+            color: #635FE5;
+            border-color: #635FE5;
+        }
+        .pill-off {
+            background: #F3F0EA;
+            color: #9CA3AF;
+        }
+        .pill-holiday {
+            background: #FF9052;
+            color: #fff;
+            box-shadow: 0 4px 12px -4px rgba(255, 144, 82, 0.45);
+        }
+
+        /* Group card */
+        .group-card {
+            background: #FFFFFF;
+            border-radius: 22px;
+            border: 1px solid #EFE5D7;
+            overflow: hidden;
+        }
+
+        .week-row {
+            padding: 14px 16px;
+        }
+        .week-row + .week-row {
+            border-top: 1px dashed #EFE5D7;
+        }
+
+        .week-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #6C6051;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .week-label .badge-now {
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+            background: #000122;
+            padding: 3px 8px;
+            border-radius: 999px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Legend chips */
+        .legend-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6C6051;
+        }
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 6px;
+            border: 1.5px solid transparent;
+        }
+
+        .person-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: #FBF8F3;
+            border: 1px solid #EFE5D7;
+        }
+        .person-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #635FE5 0%, #8B88EF 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+            letter-spacing: 0.02em;
+            flex-shrink: 0;
+        }
+
+        /* Tosia "pending" pattern */
+        .pending-tile {
+            background: repeating-linear-gradient(
+                45deg,
+                #F3F0EA,
+                #F3F0EA 8px,
+                #EFE5D7 8px,
+                #EFE5D7 16px
+            );
+        }
+
+        /* ---- Month grid view (Google Calendar style) ---- */
+        .cal-card {
+            background: #FFFFFF;
+            border-radius: 22px;
+            border: 1px solid #EFE5D7;
+            padding: 12px;
+        }
+
+        .month-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 2px 2px 12px;
+        }
+        .month-title {
+            font-family: 'Rethink Sans', system-ui, sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: #000122;
+            flex: 1;
+            text-align: center;
+        }
+        .month-nav-btn {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: #FBF8F3;
+            border: 1px solid #EFE5D7;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #6C6051;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: inherit;
+            flex-shrink: 0;
+        }
+        .month-nav-btn:hover:not(:disabled) {
+            background: #fff;
+            border-color: #C6B7A4;
+            color: #000122;
+        }
+        .month-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .month-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+            margin-bottom: 4px;
+        }
+        .month-weekday {
+            text-align: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 4px 0;
+        }
+        .month-weekday.is-weekend { color: #C6B7A4; }
+
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+        }
+        .month-cell {
+            min-height: 64px;
+            background: #FCFBF9;
+            border-radius: 8px;
+            border: 1px solid #F3F0EA;
+            padding: 4px 3px 3px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            position: relative;
+        }
+        .month-cell.is-weekend {
+            background: #FAF7F0;
+        }
+        .month-cell.is-out {
+            opacity: 0.4;
+            background: #FBF8F3;
+        }
+        .month-cell.is-today {
+            border-color: rgba(99, 95, 229, 0.5);
+            background: rgba(99, 95, 229, 0.06);
+        }
+        .month-cell-date {
+            font-size: 11px;
+            font-weight: 800;
+            color: #000122;
+            line-height: 1;
+            padding: 2px 4px 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .month-cell.is-today .month-cell-date {
+            color: #fff;
+            background: #635FE5;
+            border-radius: 999px;
+            padding: 3px 7px;
+            align-self: flex-start;
+            justify-content: center;
+            min-width: 18px;
+            box-shadow: 0 2px 6px -2px rgba(99, 95, 229, 0.55);
+        }
+        .month-cell.is-out .month-cell-date {
+            color: #9CA3AF;
+        }
+
+        .month-event {
+            border-radius: 5px;
+            padding: 3px 5px;
+            font-size: 9.5px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .month-event-label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .month-event-note {
+            font-size: 8.5px;
+            opacity: 0.85;
+            font-weight: 700;
+            text-transform: none;
+            letter-spacing: 0;
+            margin-top: 1px;
+        }
+        .month-event-office {
+            background: #635FE5;
+            box-shadow: 0 2px 6px -2px rgba(99, 95, 229, 0.45);
+        }
+        .month-event-remote {
+            background: rgba(99, 95, 229, 0.12);
+            color: #635FE5;
+            border-left: 3px solid #635FE5;
+            padding-left: 6px;
+        }
+        .month-event-off {
+            background: repeating-linear-gradient(
+                45deg, #F3F0EA 0, #F3F0EA 4px, #E5E0D3 4px, #E5E0D3 8px
+            );
+            color: #6C6051;
+        }
+        .month-event-holiday {
+            background: #FF9052;
+            box-shadow: 0 2px 6px -2px rgba(255, 144, 82, 0.4);
+        }
+
+        /* Now banner */
+        .cal-now-banner {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #635FE5;
+            background: rgba(99, 95, 229, 0.1);
+            padding: 4px 10px;
+            border-radius: 999px;
+            margin-bottom: 10px;
+        }
+        .cal-now-banner::before {
+            content: '';
+            width: 6px; height: 6px;
+            background: #635FE5;
+            border-radius: 50%;
+            animation: nowPulse 1.6s ease-in-out infinite;
+        }
+        @keyframes nowPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.5; transform: scale(1.3); }
+        }
+
+        /* Tighter cells on mobile to fit 7 columns */
+        @media (max-width: 480px) {
+            .month-cell {
+                min-height: 56px;
+                padding: 3px 2px 2px;
+            }
+            .month-cell-date {
+                font-size: 10px;
+                padding: 1px 2px 0;
+            }
+            .month-cell.is-today .month-cell-date {
+                padding: 2px 5px;
+            }
+            .month-event {
+                padding: 2px 3px;
+                font-size: 8.5px;
+                border-radius: 4px;
+            }
+            .month-event-remote {
+                padding-left: 4px;
+                border-left-width: 2px;
+            }
+            .month-event-note {
+                font-size: 7.5px;
+            }
+            .month-weekday {
+                font-size: 9px;
+                padding: 3px 0;
+            }
+        }
+
+        /* ----  Old week-view styles kept below (unused but harmless) ---- */
+
+        .week-chips {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            margin-bottom: 14px;
+            padding: 2px 2px 6px;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .week-chips::-webkit-scrollbar { display: none; }
+
+        .week-chip {
+            flex-shrink: 0;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #FBF8F3;
+            border: 1.5px solid #EFE5D7;
+            font-size: 11px;
+            font-weight: 700;
+            color: #6C6051;
+            white-space: nowrap;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+            text-align: left;
+        }
+        .week-chip:hover { border-color: #C6B7A4; }
+        .week-chip[aria-pressed="true"] {
+            background: #635FE5;
+            border-color: #635FE5;
+            color: #fff;
+            box-shadow: 0 6px 14px -6px rgba(99, 95, 229, 0.5);
+        }
+        .week-chip .chip-tag {
+            font-size: 9px;
+            font-weight: 800;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 1px;
+        }
+        .week-chip.has-today::after {
+            content: '';
+            position: absolute;
+            top: 5px; right: 6px;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #FF3B30;
+        }
+        .week-chip[aria-pressed="true"].has-today::after {
+            background: #fff;
+            box-shadow: 0 0 0 1.5px #FF3B30;
+        }
+
+        /* Grid */
+        .cal-grid {
+            --time-col: 32px;
+            --slot-h: 38px;
+            --day-gap: 3px;
+        }
+        .cal-headers {
+            display: grid;
+            grid-template-columns: var(--time-col) repeat(5, 1fr);
+            gap: var(--day-gap);
+            margin-bottom: 8px;
+        }
+        .cal-day-header { text-align: center; padding-top: 2px; }
+        .cal-day-header .day-name {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            color: #9CA3AF;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .cal-day-header .day-num {
+            display: inline-flex;
+            min-width: 26px;
+            height: 26px;
+            padding: 0 6px;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            color: #000122;
+            margin-top: 3px;
+            border-radius: 999px;
+            line-height: 1;
+        }
+        .cal-day-header.is-today .day-num {
+            background: #FF3B30;
+            color: #fff;
+        }
+
+        .cal-body {
+            display: grid;
+            grid-template-columns: var(--time-col) repeat(5, 1fr);
+            gap: var(--day-gap);
+            position: relative;
+        }
+        .cal-time {
+            display: flex;
+            flex-direction: column;
+            padding-top: 0;
+        }
+        .cal-time-slot {
+            height: var(--slot-h);
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #9CA3AF;
+            text-align: right;
+            padding-right: 6px;
+            line-height: 1;
+            transform: translateY(-5px);
+        }
+        .cal-col {
+            position: relative;
+            border-radius: 8px;
+            border: 1px solid #F3F0EA;
+            overflow: hidden;
+            background-image: repeating-linear-gradient(
+                to bottom,
+                transparent 0,
+                transparent calc(var(--slot-h) - 1px),
+                rgba(243, 240, 234, 0.85) calc(var(--slot-h) - 1px),
+                rgba(243, 240, 234, 0.85) var(--slot-h)
+            );
+            background-color: #FCFBF9;
+        }
+        .cal-col.is-today {
+            background-color: rgba(99, 95, 229, 0.04);
+            border-color: rgba(99, 95, 229, 0.3);
+        }
+
+        .cal-event {
+            position: absolute;
+            left: 3px;
+            right: 3px;
+            border-radius: 10px;
+            padding: 8px 4px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 800;
+            font-size: 10.5px;
+            line-height: 1.15;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            color: #fff;
+        }
+        .cal-event-office {
+            background: #635FE5;
+            box-shadow: 0 4px 14px -6px rgba(99, 95, 229, 0.55);
+        }
+        .cal-event-remote {
+            background: #fff;
+            color: #635FE5;
+            border: 1.5px solid #635FE5;
+        }
+        .cal-event-off {
+            background: repeating-linear-gradient(
+                45deg, #F3F0EA 0, #F3F0EA 6px, #E5E0D3 6px, #E5E0D3 12px
+            );
+            color: #6C6051;
+            border: 1px solid #EFE5D7;
+        }
+        .cal-event-holiday {
+            background: #FF9052;
+            box-shadow: 0 4px 14px -6px rgba(255, 144, 82, 0.45);
+        }
+        .cal-event-icon {
+            display: block;
+            margin-bottom: 4px;
+            opacity: 0.85;
+        }
+        .cal-event-time {
+            font-size: 9px;
+            font-weight: 700;
+            opacity: 0.85;
+            margin-top: 4px;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+        .cal-event-note {
+            font-size: 9px;
+            font-weight: 800;
+            opacity: 0.95;
+            margin-top: 3px;
+            text-transform: none;
+            letter-spacing: 0;
+            padding: 2px 6px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.22);
+        }
+        .cal-event-remote .cal-event-note {
+            background: rgba(99, 95, 229, 0.1);
+            color: #635FE5;
+        }
+        .cal-event-off .cal-event-note {
+            background: rgba(108, 96, 81, 0.12);
+            color: #6C6051;
+        }
+
+        /* "Now" red line on today's column */
+        .cal-now-line {
+            position: absolute;
+            height: 2px;
+            background: #FF3B30;
+            z-index: 5;
+            pointer-events: none;
+            border-radius: 2px;
+        }
+        .cal-now-line::before {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: -4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #FF3B30;
+        }
+
+        /* This-week banner above the grid */
+        .cal-now-banner {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #FF3B30;
+            background: rgba(255, 59, 48, 0.08);
+            padding: 4px 10px;
+            border-radius: 999px;
+            margin-bottom: 10px;
+        }
+        .cal-now-banner::before {
+            content: '';
+            width: 6px; height: 6px;
+            background: #FF3B30;
+            border-radius: 50%;
+            animation: nowPulse 1.6s ease-in-out infinite;
+        }
+        @keyframes nowPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.5; transform: scale(1.3); }
+        }
+
+        /* ---- Tabs ---- */
+        .tabs-wrap {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: rgba(251, 248, 243, 0.92);
+            backdrop-filter: saturate(180%) blur(12px);
+            -webkit-backdrop-filter: saturate(180%) blur(12px);
+            border-bottom: 1px solid #EFE5D7;
+        }
+        .tabs-scroller {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 10px 16px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .tabs-scroller::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: 999px;
+            background: #FFFFFF;
+            border: 1.5px solid #EFE5D7;
+            font-size: 13px;
+            font-weight: 700;
+            color: #6C6051;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+        .tab-btn:hover {
+            border-color: #C6B7A4;
+        }
+        .tab-btn[aria-selected="true"] {
+            background: #000122;
+            border-color: #000122;
+            color: #FFFFFF;
+            box-shadow: 0 6px 16px -8px rgba(0, 1, 34, 0.5);
+        }
+        .tab-btn .tab-count {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 999px;
+            background: rgba(0, 1, 34, 0.08);
+            color: #6C6051;
+        }
+        .tab-btn[aria-selected="true"] .tab-count {
+            background: rgba(255, 255, 255, 0.18);
+            color: #FFFFFF;
+        }
+        .tab-btn .tab-now-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #635FE5;
+            box-shadow: 0 0 0 2px rgba(99, 95, 229, 0.25);
+            display: none;
+        }
+        .tab-btn.has-now .tab-now-dot {
+            display: inline-block;
+        }
+        .tab-btn[aria-selected="true"].has-now .tab-now-dot {
+            background: #FFFFFF;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeUp 0.25s ease-out;
+        }
+        .tab-panel.is-active {
+            display: block;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrap bg-bg-app text-ink">
+
+    <!-- Tabs -->
+    <nav class="tabs-wrap" role="tablist" aria-label="Intern groups">
+        <div class="tabs-scroller" id="tabsScroller">
+            <button class="tab-btn" role="tab" aria-selected="true" data-tab="g1">
+                <span class="tab-now-dot"></span>
+                IES Abroad
+                <span class="tab-count">4</span>
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="g2">
+                <span class="tab-now-dot"></span>
+                CIEE
+                <span class="tab-count">2</span>
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="g3">
+                <span class="tab-now-dot"></span>
+                Italy
+                <span class="tab-count">3</span>
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="g4">
+                Tosia
+            </button>
+        </div>
+    </nav>
+
+    <main class="px-4 pt-4 pb-24 space-y-5">
+
+        <!-- Legend (always visible) -->
+        <section class="bg-surface rounded-2xl border border-line p-4">
+            <div class="flex flex-wrap gap-x-5 gap-y-2 justify-center">
+                <span class="legend-chip"><span class="legend-dot" style="background:#635FE5;"></span>Office</span>
+                <span class="legend-chip"><span class="legend-dot" style="background:#fff;border-color:#635FE5;"></span>Remote</span>
+                <span class="legend-chip"><span class="legend-dot" style="background:#F3F0EA;"></span>Off</span>
+                <span class="legend-chip"><span class="legend-dot" style="background:#FF9052;"></span>Holiday</span>
+            </div>
+        </section>
+
+        <!-- PANEL: IES Abroad Tech -->
+        <section class="tab-panel is-active" id="panel-g1" role="tabpanel">
+            <div class="px-1 mb-3 flex items-end justify-between gap-3">
+                <div>
+                    <div class="text-[11px] uppercase tracking-wider text-office font-extrabold">Group 01</div>
+                    <h2 class="font-heading font-extrabold text-xl leading-tight">IES Abroad Tech</h2>
+                    <p class="text-xs text-ink-soft mt-0.5">Owen · Ilan · Taylor · Raunesh</p>
+                </div>
+                <div class="text-[10px] uppercase tracking-wider text-ink-muted font-bold">Jun – Jul</div>
+            </div>
+
+            <div class="mb-3 inline-flex items-center gap-2 bg-surface border border-line rounded-full px-3 py-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635FE5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path d="M12 7v5l3 2"/>
+                </svg>
+                <span class="text-[11px] font-bold text-ink">9:00 – 16:00</span>
+                <span class="text-[11px] text-ink-soft">· 1h break</span>
+            </div>
+
+            <div class="cal-card"
+                 data-hours='{"start":9,"end":16}'
+                 data-weeks='[
+                {"range":"1 – 5 Jun","start":"2026-06-01","end":"2026-06-05","days":["office","remote","remote","office","off"]},
+                {"range":"8 – 12 Jun","start":"2026-06-08","end":"2026-06-12","days":["office","remote","remote","office","off"]},
+                {"range":"15 – 19 Jun","start":"2026-06-15","end":"2026-06-19","days":["office","remote","remote","office","off"]},
+                {"range":"22 – 26 Jun","start":"2026-06-22","end":"2026-06-26","days":["office","remote",{"type":"holiday","note":"24/6"},"office","office"]},
+                {"range":"29 Jun – 3 Jul","start":"2026-06-29","end":"2026-07-03","days":["office","remote","office","office","off"]}
+            ]'></div>
+        </section>
+
+        <!-- PANEL: CIEE -->
+        <section class="tab-panel" id="panel-g2" role="tabpanel">
+            <div class="px-1 mb-3 flex items-end justify-between gap-3">
+                <div>
+                    <div class="text-[11px] uppercase tracking-wider text-office font-extrabold">Group 02</div>
+                    <h2 class="font-heading font-extrabold text-xl leading-tight">CIEE</h2>
+                    <p class="text-xs text-ink-soft mt-0.5">Kayla · Karina</p>
+                </div>
+                <div class="text-[10px] uppercase tracking-wider text-ink-muted font-bold">Jun – Jul</div>
+            </div>
+
+            <div class="mb-3 inline-flex items-center gap-2 bg-surface border border-line rounded-full px-3 py-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635FE5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path d="M12 7v5l3 2"/>
+                </svg>
+                <span class="text-[11px] font-bold text-ink">9:00 – 18:00</span>
+                <span class="text-[11px] text-ink-soft">· 1h break</span>
+            </div>
+
+            <div class="cal-card"
+                 data-hours='{"start":9,"end":18}'
+                 data-weeks='[
+                {"range":"1 – 5 Jun","start":"2026-06-01","end":"2026-06-05","days":["remote","office","office","office","remote"]},
+                {"range":"8 – 12 Jun","start":"2026-06-08","end":"2026-06-12","days":["remote","office","office","office",{"type":"off","note":"12/6"}]},
+                {"range":"15 – 19 Jun","start":"2026-06-15","end":"2026-06-19","days":["remote","office","office","office","remote"]},
+                {"range":"22 – 27 Jun","start":"2026-06-22","end":"2026-06-27","days":["remote","office",{"type":"holiday","note":"24/6"},{"type":"remote","note":"25/6"},{"type":"off","note":"27/6"}]},
+                {"range":"29 Jun – 3 Jul","start":"2026-06-29","end":"2026-07-03","days":["remote","office","office","office",{"type":"off","note":"3/7"}]},
+                {"range":"6 – 10 Jul","start":"2026-07-06","end":"2026-07-10","days":["remote","office","office","office",{"type":"off","note":"10/7"}]}
+            ]'></div>
+        </section>
+
+        <!-- PANEL: Italy Team -->
+        <section class="tab-panel" id="panel-g3" role="tabpanel">
+            <div class="px-1 mb-3 flex items-end justify-between gap-3">
+                <div>
+                    <div class="text-[11px] uppercase tracking-wider text-office font-extrabold">Group 03</div>
+                    <h2 class="font-heading font-extrabold text-xl leading-tight">Italy Team</h2>
+                    <p class="text-xs text-ink-soft mt-0.5">Same weekly pattern · 9:00 – 18:00</p>
+                </div>
+                <div class="text-[10px] uppercase tracking-wider text-ink-muted font-bold">Every week</div>
+            </div>
+
+            <div class="mb-3 inline-flex items-center gap-2 bg-surface border border-line rounded-full px-3 py-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635FE5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path d="M12 7v5l3 2"/>
+                </svg>
+                <span class="text-[11px] font-bold text-ink">9:00 – 18:00</span>
+                <span class="text-[11px] text-ink-soft">· 1h break</span>
+            </div>
+
+            <div class="bg-surface rounded-2xl border border-line mb-4 p-4">
+                <div class="text-[10px] uppercase tracking-wider text-ink-soft font-extrabold mb-2">Team members</div>
+                <div class="grid grid-cols-1 gap-2">
+                    <div class="person-card">
+                        <div class="person-avatar">NI</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-sm">Nicoletta</div>
+                        </div>
+                    </div>
+                    <div class="person-card">
+                        <div class="person-avatar">FA</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-sm">Fabiana</div>
+                        </div>
+                    </div>
+                    <div class="person-card">
+                        <div class="person-avatar">FR</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-sm">Francesco</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cal-card"
+                 data-hours='{"start":9,"end":18}'
+                 data-pattern='{"days":["remote","remote","office","office","remote"]}'></div>
+        </section>
+
+        <!-- PANEL: Tosia -->
+        <section class="tab-panel" id="panel-g4" role="tabpanel">
+            <div class="px-1 mb-3 flex items-end justify-between gap-3">
+                <div>
+                    <div class="text-[11px] uppercase tracking-wider text-office font-extrabold">Group 04</div>
+                    <h2 class="font-heading font-extrabold text-xl leading-tight">Tosia</h2>
+                    <p class="text-xs text-ink-soft mt-0.5">To be defined</p>
+                </div>
+            </div>
+
+            <div class="group-card p-5">
+                <div class="rounded-2xl pending-tile p-5 flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-full bg-surface border border-line flex items-center justify-center flex-shrink-0">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6C6051" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="9"/>
+                            <path d="M12 7v5l3 2"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-bold text-sm text-ink">To be defined with Jordi</div>
+                        <p class="text-xs text-ink-soft mt-1 leading-relaxed">Schedule and office days will be confirmed soon. In the meantime, coordinate directly with Jordi.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer note (always) -->
+        <footer class="pt-2 pb-4 text-center space-y-1.5">
+            <p class="text-[11px] text-ink-muted leading-relaxed">
+                Any changes or questions? Reach out to
+                <a href="mailto:maxim.esteban@placenet.app" class="text-office font-semibold underline underline-offset-2 hover:opacity-80">maxim.esteban@placenet.app</a>
+                <br>or through the app's <strong class="text-ink-soft">SHIFT</strong> section.
+            </p>
+            <p class="text-[10px] text-ink-muted">Placenet · Internal</p>
+        </footer>
+
+    </main>
+</div>
+
+    <script>
+        // ---- Month-grid calendar (Google Calendar style) ----
+        const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'];
+        const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const TYPE_LABELS = { office: 'Office', remote: 'Remote', off: 'Off', holiday: 'Holiday' };
+
+        function parseDay(day) {
+            if (typeof day === 'string') return { type: day, note: null };
+            return { type: day.type, note: day.note || null };
+        }
+        function pad(n) { return (n < 10 ? '0' : '') + n; }
+        function dateKey(d) {
+            return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+        }
+
+        // Build a map { 'YYYY-MM-DD' -> {type, note} } from weeks data
+        function buildEventsFromWeeks(weeks) {
+            const map = new Map();
+            weeks.forEach(w => {
+                if (!w.start) return;
+                const start = new Date(w.start + 'T00:00:00');
+                w.days.forEach((day, idx) => {
+                    const d = new Date(start);
+                    d.setDate(start.getDate() + idx);
+                    map.set(dateKey(d), parseDay(day));
+                });
+            });
+            return map;
+        }
+
+        // Generate a per-month events map from a weekly pattern (Mon-Fri)
+        function buildEventsFromPattern(pattern, year, month) {
+            const map = new Map();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const d = new Date(year, month, day);
+                const dow = d.getDay(); // 0=Sun, 1=Mon, ..., 5=Fri, 6=Sat
+                if (dow >= 1 && dow <= 5) {
+                    map.set(dateKey(d), parseDay(pattern.days[dow - 1]));
+                }
+            }
+            return map;
+        }
+
+        // Build a month grid component (header + weekdays + 6×7 cells)
+        function buildMonthGrid(year, month, events) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const root = document.createElement('div');
+
+            // Header
+            const head = document.createElement('div');
+            head.className = 'month-head';
+            const prev = document.createElement('button');
+            prev.type = 'button';
+            prev.className = 'month-nav-btn';
+            prev.setAttribute('aria-label', 'Previous month');
+            prev.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>';
+            const title = document.createElement('div');
+            title.className = 'month-title';
+            title.textContent = MONTHS[month] + ' ' + year;
+            const next = document.createElement('button');
+            next.type = 'button';
+            next.className = 'month-nav-btn';
+            next.setAttribute('aria-label', 'Next month');
+            next.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>';
+            head.appendChild(prev);
+            head.appendChild(title);
+            head.appendChild(next);
+            root.appendChild(head);
+
+            // Weekday headers (Mon..Sun)
+            const weekdayRow = document.createElement('div');
+            weekdayRow.className = 'month-weekdays';
+            WEEKDAYS.forEach((name, i) => {
+                const w = document.createElement('div');
+                w.className = 'month-weekday' + (i >= 5 ? ' is-weekend' : '');
+                w.textContent = name;
+                weekdayRow.appendChild(w);
+            });
+            root.appendChild(weekdayRow);
+
+            // Grid: start from Monday of the week containing the 1st
+            const grid = document.createElement('div');
+            grid.className = 'month-grid';
+            const firstOfMonth = new Date(year, month, 1);
+            const firstDow = firstOfMonth.getDay();      // 0=Sun..6=Sat
+            const mondayOffset = (firstDow + 6) % 7;     // 0 if Mon, 6 if Sun
+            const gridStart = new Date(year, month, 1 - mondayOffset);
+
+            // Decide number of weeks (5 or 6) to render
+            const lastOfMonth = new Date(year, month + 1, 0);
+            const lastDow = lastOfMonth.getDay();
+            const trailing = (7 - ((lastDow + 6) % 7) - 1) % 7;
+            const totalDays = mondayOffset + lastOfMonth.getDate() + trailing;
+            const weeksToRender = Math.ceil(totalDays / 7);
+
+            for (let i = 0; i < weeksToRender * 7; i++) {
+                const d = new Date(gridStart);
+                d.setDate(gridStart.getDate() + i);
+
+                const cell = document.createElement('div');
+                cell.className = 'month-cell';
+                const isOut = d.getMonth() !== month;
+                const dow = d.getDay();
+                const isWeekend = (dow === 0 || dow === 6);
+                const isToday = d.getTime() === today.getTime();
+                if (isOut) cell.classList.add('is-out');
+                if (isWeekend) cell.classList.add('is-weekend');
+                if (isToday) cell.classList.add('is-today');
+
+                const dateEl = document.createElement('div');
+                dateEl.className = 'month-cell-date';
+                dateEl.textContent = d.getDate();
+                cell.appendChild(dateEl);
+
+                // Event for in-month cells only (avoid double-rendering pattern events in neighbors)
+                if (!isOut) {
+                    const ev = events.get(dateKey(d));
+                    if (ev) {
+                        const evEl = document.createElement('div');
+                        evEl.className = 'month-event month-event-' + ev.type;
+                        const lab = document.createElement('span');
+                        lab.className = 'month-event-label';
+                        lab.textContent = TYPE_LABELS[ev.type] || ev.type;
+                        evEl.appendChild(lab);
+                        if (ev.note) {
+                            const note = document.createElement('span');
+                            note.className = 'month-event-note';
+                            note.textContent = ev.note;
+                            evEl.appendChild(note);
+                        }
+                        cell.appendChild(evEl);
+                    }
+                }
+
+                grid.appendChild(cell);
+            }
+            root.appendChild(grid);
+
+            return { root, prevBtn: prev, nextBtn: next };
+        }
+
+        // (Legacy week-view function kept below — no longer used)
+        function buildWeekGrid_unused(weekData, hours, opts = {}) {
+            const wrap = document.createElement('div');
+            wrap.className = 'cal-grid';
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Compute 5 weekday dates from start
+            const dates = [];
+            if (weekData.start) {
+                const s = new Date(weekData.start + 'T00:00:00');
+                for (let i = 0; i < 5; i++) {
+                    const d = new Date(s);
+                    d.setDate(s.getDate() + i);
+                    dates.push(d);
+                }
+            } else {
+                for (let i = 0; i < 5; i++) dates.push(null);
+            }
+
+            // Headers
+            const headers = document.createElement('div');
+            headers.className = 'cal-headers';
+            headers.appendChild(document.createElement('div')); // corner
+            dates.forEach((date, idx) => {
+                const h = document.createElement('div');
+                h.className = 'cal-day-header';
+                const n = document.createElement('span');
+                n.className = 'day-name';
+                n.textContent = DAY_NAMES[idx];
+                h.appendChild(n);
+                const num = document.createElement('span');
+                num.className = 'day-num';
+                num.textContent = date ? date.getDate() : '·';
+                h.appendChild(num);
+                if (date && date.getTime() === today.getTime()) h.classList.add('is-today');
+                headers.appendChild(h);
+            });
+            wrap.appendChild(headers);
+
+            // Body
+            const body = document.createElement('div');
+            body.className = 'cal-body';
+
+            // Time axis
+            const timeCol = document.createElement('div');
+            timeCol.className = 'cal-time';
+            for (let h = hours.start; h <= hours.end; h++) {
+                const slot = document.createElement('div');
+                slot.className = 'cal-time-slot';
+                slot.textContent = pad(h);
+                timeCol.appendChild(slot);
+            }
+            body.appendChild(timeCol);
+
+            const totalHours = hours.end - hours.start;
+            const bodyHeight = totalHours * SLOT_H;
+
+            // Day columns
+            let todayIdx = -1;
+            dates.forEach((date, idx) => {
+                const col = document.createElement('div');
+                col.className = 'cal-col';
+                col.style.height = bodyHeight + 'px';
+                if (date && date.getTime() === today.getTime()) {
+                    col.classList.add('is-today');
+                    todayIdx = idx;
+                }
+
+                const day = parseDay(weekData.days[idx]);
+                const ev = document.createElement('div');
+                ev.className = 'cal-event cal-event-' + day.type;
+                ev.style.top = '0px';
+                ev.style.height = bodyHeight + 'px';
+
+                const label = document.createElement('div');
+                label.textContent = TYPE_LABELS[day.type] || day.type;
+                ev.appendChild(label);
+
+                if (day.type === 'office' || day.type === 'remote') {
+                    const t = document.createElement('div');
+                    t.className = 'cal-event-time';
+                    t.textContent = pad(hours.start) + ':00 – ' + pad(hours.end) + ':00';
+                    ev.appendChild(t);
+                }
+                if (day.note) {
+                    const noteEl = document.createElement('div');
+                    noteEl.className = 'cal-event-note';
+                    noteEl.textContent = day.note;
+                    ev.appendChild(noteEl);
+                }
+
+                col.appendChild(ev);
+                body.appendChild(col);
+            });
+
+            // "Now" line on today's column (only if today is shown and we're inside work hours)
+            if (todayIdx >= 0) {
+                const now = new Date();
+                const mins = now.getHours() * 60 + now.getMinutes();
+                const startMin = hours.start * 60;
+                const endMin = hours.end * 60;
+                if (mins >= startMin && mins <= endMin) {
+                    const ratio = (mins - startMin) / (endMin - startMin);
+                    const top = ratio * bodyHeight;
+                    const line = document.createElement('div');
+                    line.className = 'cal-now-line';
+                    // Position relative to grid: skip time-col + day-gap, then per-day width
+                    // We'll let CSS handle width via grid via inline calc using the column slot:
+                    const gridWidth = '(100% - var(--time-col) - var(--day-gap))';
+                    const dayWidth = `calc((${gridWidth} - 4 * var(--day-gap)) / 5)`;
+                    line.style.left = `calc(var(--time-col) + var(--day-gap) + (${dayWidth} + var(--day-gap)) * ${todayIdx})`;
+                    line.style.width = dayWidth;
+                    line.style.top = top + 'px';
+                    body.appendChild(line);
+                }
+            }
+
+            wrap.appendChild(body);
+            return wrap;
+        }
+
+        function renderCalendarCard(card) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Determine months to navigate + base events
+            let isPattern = false;
+            let patternData = null;
+            let staticEvents = null;
+            let months = []; // [{year, month}]
+            let currentIdx = 0;
+
+            if (card.dataset.pattern) {
+                isPattern = true;
+                patternData = JSON.parse(card.dataset.pattern);
+                // Cover June + July 2026 (data window for the cohort)
+                months = [
+                    { year: 2026, month: 5 }, // June
+                    { year: 2026, month: 6 }  // July
+                ];
+            } else {
+                const weeks = JSON.parse(card.dataset.weeks);
+                staticEvents = buildEventsFromWeeks(weeks);
+                // Derive months covered by the data
+                const allKeys = [...staticEvents.keys()].sort();
+                if (!allKeys.length) return false;
+                const first = new Date(allKeys[0] + 'T00:00:00');
+                const last = new Date(allKeys[allKeys.length - 1] + 'T00:00:00');
+                let y = first.getFullYear(), m = first.getMonth();
+                const ey = last.getFullYear(), em = last.getMonth();
+                while (y < ey || (y === ey && m <= em)) {
+                    months.push({ year: y, month: m });
+                    m++;
+                    if (m > 11) { m = 0; y++; }
+                }
+            }
+
+            // Default month: the one containing today (if any), else first
+            months.forEach((mm, i) => {
+                if (mm.year === today.getFullYear() && mm.month === today.getMonth()) {
+                    currentIdx = i;
+                }
+            });
+
+            const containsToday = months[currentIdx].year === today.getFullYear()
+                              && months[currentIdx].month === today.getMonth();
+
+            // Holder for the grid
+            const holder = document.createElement('div');
+            card.appendChild(holder);
+
+            function render() {
+                holder.innerHTML = '';
+                const { year, month } = months[currentIdx];
+                const events = isPattern
+                    ? buildEventsFromPattern(patternData, year, month)
+                    : staticEvents;
+                const { root, prevBtn, nextBtn } = buildMonthGrid(year, month, events);
+
+                prevBtn.disabled = currentIdx === 0;
+                nextBtn.disabled = currentIdx === months.length - 1;
+                prevBtn.addEventListener('click', () => {
+                    if (currentIdx > 0) { currentIdx--; render(); }
+                });
+                nextBtn.addEventListener('click', () => {
+                    if (currentIdx < months.length - 1) { currentIdx++; render(); }
+                });
+
+                holder.appendChild(root);
+            }
+            render();
+
+            return containsToday;
+        }
+
+        // --- Initialize calendars ---
+        let currentWeekTab = null;
+        document.querySelectorAll('.cal-card').forEach(card => {
+            const hasNow = renderCalendarCard(card);
+            if (hasNow) {
+                const panel = card.closest('.tab-panel');
+                if (panel) currentWeekTab = panel.id.replace('panel-', '');
+            }
+        });
+
+        // --- Tabs ---
+        const tabs = document.querySelectorAll('.tab-btn');
+        const panels = document.querySelectorAll('.tab-panel');
+
+        function activateTab(tabId, opts = {}) {
+            tabs.forEach(t => {
+                const selected = t.dataset.tab === tabId;
+                t.setAttribute('aria-selected', selected ? 'true' : 'false');
+                if (selected && opts.scroll !== false) {
+                    // Center the active tab horizontally if it overflows
+                    t.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                }
+            });
+            panels.forEach(p => {
+                p.classList.toggle('is-active', p.id === `panel-${tabId}`);
+            });
+        }
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => activateTab(tab.dataset.tab));
+        });
+
+        // Highlight the tab that contains the current week with a small dot
+        if (currentWeekTab) {
+            const winnerTab = document.querySelector(`.tab-btn[data-tab="${currentWeekTab}"]`);
+            if (winnerTab) {
+                winnerTab.classList.add('has-now');
+                activateTab(currentWeekTab, { scroll: false });
+            }
+        }
+    </script>
+</body>
+</html>
